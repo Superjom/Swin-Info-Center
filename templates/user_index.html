@@ -1,0 +1,172 @@
+$def with(userinfo, message_count, messages, news)
+
+<link rel="stylesheet" href="static/style/style.css" />
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.mouse.js"></script>
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.draggable.js"></script>
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.position.js"></script>
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.dialog.js"></script>
+<div id="content" class="box">
+		<div id="barleft">
+			<img id="user_img" src="static/images/user.jpg" />
+            <div style="width:100%; padding:10px;">
+                <span id="user_name">$userinfo['name']</span>
+                    <hr />
+                <ul id="user_profile">
+                    <li>$userinfo['university']</li>
+                    <li>$userinfo['email']</li>
+                    <li>$userinfo['pos']</li>
+                </ul>
+                <hr />
+                <table id="user_new_messages">
+                    <tr class="first_line"><td>3</td> <td>0</td> <td>12</td></tr>
+                    <tr class="second_line"><td>News</td><td>Alert</td><td>activities</td></tr>
+                </table>
+
+            </div><!-- end div -->
+		</div><!-- barleft -->
+		
+		<div id="baright">
+			<ul id="message_source_tag">
+				<li><a href="#tabs-1">News</a></li>
+				<li><a href="#tabs-2">Messages</a></li>
+                <li><a href="#tabs-3">Push your message</a></li>
+			</ul>
+            <div id="tabs-1" class="tab_box">
+$for new in news:
+                <table>
+                    <tr>
+                    <td> 
+                        <a href="#" class="upper"></a>
+                        <a href="#" class="downer"></a>
+                    </td>
+
+                    <td>
+                        <span class="title"><a href="/news?id=$new['id']" style="font-family:'微软雅黑'; ">$new['title'] </a></span>
+                        <span class="subtitle">开始学习的时候，大家都会觉得有一定的意思，所以需要有很多的方法...</span>
+                        <span class="date">Date:$new['date']</span>
+                        <span class="from">$new['station']</span>
+                    </td>
+                    </tr>
+                </table>
+
+                <a href="#">Read more</a>
+            </div><!-- end tabs-1 -->
+
+            <div id="tabs-2" class="tab_box" style="padding:0;">
+			
+$for message in messages:
+    <table class="message">
+    <tr>
+    <td valign="top"> 
+        <a href="#" class="upper"></a>
+        <a href="#" class="downer"></a>
+    </td>
+
+    <td>
+        <span class="title"><a href="#" class="title" tobox="$message['id']" style="font-family:'微软雅黑'; ">$message['title'] </a></span>
+        <span class="subtitle">$message['summary']</span>
+        <span class="date">Date:$message['date']</span>
+        <span class="from">研究生院</span>
+		<div id="box_$message['id']" class="message-content">$:message['content']</div>
+    </td>
+    </tr>
+</table>
+                <a href="#">Read more</a>
+            </div><!-- end tabs-2 -->
+
+            <div id="tabs-3" class="tab_box">
+                <form id="push_message">
+                    <table>
+						<tr>
+							<td valign="top"><button id="filter_bn" type="button">Filter</button></td>
+							<td><input type="text" /></td>
+						</tr>
+                        <tr>
+                            <td valign="top">Title</td>
+                            <td><input id="title" type="text" /></td>
+						</tr>
+                        <tr>
+							<td valign="top">Summary</td>
+							<td><textarea id="summary"></textarea></td>
+						</tr>
+						<tr>
+							<td valign="top">Message</td>
+							<td><textarea id="message"></textarea></td>
+						</tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                <button type="button">Push</button>
+								<button type="reset">Cancel</button>
+							</td>
+                        </tr>
+                    </table>
+                </form>
+
+            </div><!-- end tabs-3 -->
+		</div><!-- baright -->
+</div><!-- end content -->
+<div id="dialog-message" title="Filter Tags">
+    <div>
+		<select>
+			<option>信息协会</option>
+			<option>足球协会</option>
+		</select>
+    </div>
+    <table id="tags">
+        <tr>
+            <td>男生</td>
+            <td class="yn">
+                <input type="radio" id="check1" /><label for="check1">OR</label>
+                <input type="radio" id="check2" /><label for="check2">男生</label>
+                <input type="radio" id="check3" /><label for="check3">NOT</label>
+            </td>
+        </tr>
+        <tr>
+            <td>女生</td>
+            <td class="yn">
+                <input type="checkbox" id="check4" /><label for="check4">OR</label>
+                <input type="checkbox" id="check5" /><label for="check5">男生</label>
+                <input type="checkbox" id="check6" /><label for="check6">NOT</label>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+jQuery(function(){
+    jQuery("#baright").tabs();
+	jQuery("form#push_message button").button();
+	jQuery("#tags").buttonset();
+
+    // ajax 传回message内容
+    jQuery("table.message a.title").click(function(){
+        var _this = jQuery(this);
+        var id = _this.attr("tobox");
+        var _content = jQuery("#box_" + id);
+        _content.show(1000);
+		return false;
+    });
+
+
+
+    // dialog
+    jQuery( "#dialog-message" ).dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            Ok: function() {
+                jQuery( this ).dialog( "close" );
+            }
+        }
+    });
+	
+    jQuery("#filter_bn").click(function(){
+        jQuery("#dialog-message").dialog("open");
+        return false;
+    });	
+
+
+	
+	
+});
+</script>

@@ -1,0 +1,72 @@
+<link rel="stylesheet" href="static/style/style.css" />
+<div id="content" class="box">
+		<div id="barleft">
+			<img id="user_img" src="static/images/user.jpg" />
+            <div style="width:100%; padding:10px;">
+                <span id="user_name">Superjom</span>
+                    <hr />
+                <ul id="user_profile">
+                    <li>Peking University</li>
+                    <li>superjom@gmail.com</li>
+                    <li>Shenzhen</li>
+                </ul>
+                <hr />
+                <table id="user_new_messages">
+                    <tr class="first_line"><td>3</td> <td>0</td> <td>12</td></tr>
+                    <tr class="second_line"><td>News</td><td>Alert</td><td>activities</td></tr>
+                </table>
+
+            </div><!-- end div -->
+		</div><!-- barleft -->
+		
+		<div id="baright">
+			<div id="profile">
+			<ul>
+				<li><a href="#tabs-1">Circle</a></li>
+				<li><a href="#tabs-2">Tag</a></li>
+			</ul>
+			<div id="tabs-1">
+				<table>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>信息技术协会圈</td><td>27 Listeners</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>信息学院一班</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>北大新闻网</td>
+					</tr>
+                </table>
+				<button type="button">Submit</button>
+			</div><!-- end tabs-1 -->
+			<div id="tabs-2">
+				<table>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>信息技术协会圈</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>信息学院一班</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" /></td>
+						<td>北大新闻网</td>
+					</tr>
+                </table>
+				<button type="button">Submit</button>				
+			</div><!-- end tabs-2 -->
+            </div><!-- end profile -->
+		</div><!-- baright -->
+		
+</div><!-- end content -->
+
+<script>
+jQuery(function(){
+	jQuery( "#profile" ).tabs();
+	jQuery("#content button").button();
+});
+</script>

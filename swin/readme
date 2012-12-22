@@ -1,0 +1,1 @@
+hxs.select('//div[contains(@class,"f_title")]/a[contains(@href,"news.pkusz.edu.cn")]/text()').extract()

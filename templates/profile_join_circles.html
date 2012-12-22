@@ -1,0 +1,169 @@
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.accordion.js"></script>
+<link type="text/css" rel="stylesheet" href="static/style/profile_edit.css"/>
+<link type="text/css" rel="stylesheet" href="static/style/circles.css"/>
+
+<div id="content" class="box">
+    <div id="profile_nav">
+        <span class="li inactive">
+            <a href="/profile_edit">Edit Profile</a>
+        </span>
+    <span class="separator"> > </span>
+        <span class="li inactive">
+            <a href="/profile_select_tags">Select Tags</a>
+        </span>
+    <span class="separator"> > </span>
+        <span class="li ">
+            <a href="/profile_join_circles">Join in Circles</a>
+        </span>
+    </div><!-- end profile_nav -->
+
+    <ul>
+        <li><a href="#tabs-1">Circles</a></li>
+        <li><a href="#tabs-2">Create a Circle</a></li>
+    </ul>
+
+    <div id="tabs">
+    <div id="tabs-1">
+        <div id="accordion">
+        <h3>学校组织</h3>
+        <div>
+        <ul id="circles">
+            <li>
+                <table>
+                    <tr>
+                    <td valign="top">
+                    <img src="http://a3.att.hudong.com/13/08/01300001057368129076086794611_s.jpg"/>
+                    </td>
+                    <td>
+                    <span class="name">信息协会交流圈</span>
+                    <span class="des">一个关于社团圈的介绍，如果对技术比较感兴趣的话，可以参加我们。</span>
+                    <span class="num">听众: <b>32</b>人</span>
+                    <span class="admin">
+                        admin:
+                        <span class="a">Superjom</span>
+                        <span class="a">Chunwei</span>
+                    </span>
+                    <br/> <input type="checkbox" id="check1" /><label for="check1">Join</label>
+                    </td>
+                </tr>
+                </table>
+            </li>
+
+            <li>
+                <table>
+                    <tr>
+                    <td valign="top">
+                    <img src="http://a3.att.hudong.com/13/08/01300001057368129076086794611_s.jpg"/>
+                    </td>
+                    <td>
+                    <span class="name">信息协会交流圈</span>
+                    <span class="des">一个关于社团圈的介绍，如果对技术比较感兴趣的话，可以参加我们。</span>
+                    <span class="num">听众: <b>32</b>人</span>
+                    <span class="admin">
+                        admin:
+                        <span class="a">Superjom</span>
+                        <span class="a">Chunwei</span>
+                    </span>
+                    <br/> <input type="checkbox" id="check2" /><label for="check2">Join</label>
+                    </td>
+                </tr>
+                </table>
+            </li>
+        </ul>
+        </div>
+
+        <h3>社团</h3>
+        <div>
+        <ul id="circles">
+            <li>
+                <table>
+                    <tr>
+                    <td valign="top">
+                    <img src="http://a3.att.hudong.com/13/08/01300001057368129076086794611_s.jpg"/>
+                    </td>
+                    <td>
+                    <span class="name">信息协会交流圈</span>
+                    <span class="des">一个关于社团圈的介绍，如果对技术比较感兴趣的话，可以参加我们。</span>
+                    <span class="num">听众: <b>32</b>人</span>
+                    <span class="admin">
+                        admin:
+                        <span class="a">Superjom</span>
+                        <span class="a">Chunwei</span>
+                    </span>
+                    </td>
+                </tr>
+                </table>
+            </li>
+
+            <li>
+                <table>
+                    <tr>
+                    <td valign="top">
+                    <img src="http://a3.att.hudong.com/13/08/01300001057368129076086794611_s.jpg"/>
+                    </td>
+                    <td>
+                    <span class="name">信息协会交流圈</span>
+                    <span class="des">一个关于社团圈的介绍，如果对技术比较感兴趣的话，可以参加我们。</span>
+                    <span class="num">听众: <b>32</b>人</span>
+                    <span class="admin">
+                        admin:
+                        <span class="a">Superjom</span>
+                        <span class="a">Chunwei</span>
+                    </span>
+                    </td>
+                </tr>
+                </table>
+            </li>
+        </ul>
+
+        </div>
+        </div><!-- end accordion -->
+    </div><!-- end tabs-1 -->
+    <div id="tabs-2">
+        <table id="circle_create">
+            <tr>
+                <td>Name</td><td><input type="text"/></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Logo</td><td><input type="text"/></td>
+                <td><button type="button">review</button></td>
+            </tr>
+            <tr>
+                <td>Description</td><td><textarea></textarea></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="button">Submit</button>
+                    &nbsp;
+                    &nbsp;
+                    <button type="reset">Cancel</button>
+                </td>
+                <td></td>
+            </tr>
+        </table><!-- circle_create -->
+
+        <div id="logo_review">
+            <img src="http://a3.att.hudong.com/13/08/01300001057368129076086794611_s.jpg"/>
+        </div><!-- logo_review -->
+
+        <div class="clear"></div>
+
+    </div><!-- end tabs-2 -->
+
+    </div><!-- end tabs -->
+
+</div><!-- end content -->
+
+<script>
+jQuery(function(){
+	jQuery("#content").tabs();
+    jQuery( "#accordion" ).accordion({
+        heightStyle: "content"
+    });
+    jQuery("#tabs-1 ").buttonset();
+	jQuery("#tabs-2 button").button();
+});
+</script>

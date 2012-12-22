@@ -1,0 +1,25 @@
+<link type="text/css" rel="stylesheet" href="static/style/signin.css"/>
+<div id="content" class="box">
+	<form method="post" action="/signin">
+		<table id="signin">
+			<tr>
+				<td>用户名：<br /><input name="username" type="text" /></td>
+			</tr>
+			<tr>
+				<td>密码：<br /><input name="pwd" type="password"  /></td>
+			</tr>
+			<tr>
+				<td><button type="submit">Submit</button> &nbsp; &nbsp;
+					<button type="reset">Cancel</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div><!-- end content -->
+
+<script>
+jQuery(function(){
+	jQuery("#content button").button();
+	jQuery("#register_bn").css("width","260px").css("margin",0);
+});
+</script>

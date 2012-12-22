@@ -1,0 +1,61 @@
+<link type="text/css" rel="stylesheet" href="static/style/login.css"/>
+<div id="content" class="box">
+	<div id="title_left">
+		<span class="title">Receive messages.</span><br/>
+		<span class="title">better, in your circles.</span><br/>
+		<span class="subtitle">
+			建立个人或者团体的圈子，精确地传达自己的消息。
+			集中式的新闻和信息接收中心。
+		</span>
+	</div><!-- title_left -->
+	<form>
+	<table id="login">
+		<tr>
+			<td><input type="text"  value="用户名"/></td>
+		</tr>
+		<tr>
+			<td><input type="text"  value="Email"/></td>
+		</tr>
+		<tr>
+			<td><input type="password" /></td>
+		</tr>
+		
+		<tr>
+			<td><button id="register_bn" type="submmit">Sign up here</button> 
+		</td>
+	</table>
+	<div class="clear"></div>
+	
+	<table id="intro">
+		<tr>
+			<td>
+				<img src="static/images/communicate.png" />
+			</td>
+			<td>
+				<img src="../static/images/devices.png" />
+			</td>
+			<td>
+				<img src="static/images/network.png" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p>信息推送</p><p>信息推送</p><p>信息推送</p>
+			</td>
+			<td>
+				<p>基于浏览器</p>
+			</td>
+			<td>
+				<p>Circle</p>
+			</td>
+		</tr>
+	</table>
+	<div class="clear"></div>
+</div><!-- end content -->
+
+<script>
+jQuery(function(){
+	jQuery("#content button").button();
+	jQuery("#register_bn").css("width","260px").css("margin",0);
+});
+</script>

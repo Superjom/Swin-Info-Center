@@ -1,0 +1,58 @@
+$def with (content)
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Swin Message Center</title>
+<link rel="stylesheet" href="static/js/jquery-ui/development-bundle/themes/blue-theme/jquery.ui.all.css" />
+<link rel="stylesheet" href="static/style/common.css" />
+<script src="static/js/jquery-ui/js/jquery-1.8.3.js"></script>
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.core.js"></script>
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.widget.js"></script>
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.tabs.js"></script>
+<script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.button.js"></script>
+
+<style>
+</style>
+</head>
+
+<body>
+	<div id="header">
+        <div class="content">
+            <img id="logo" src="static/images/logo.png" />
+            <div id="icons">
+                <a class="config" href="/profile_edit" alt="config"></a>
+                <a class="logout" href="#" alt="logout"></a>
+            </div><!-- end icons -->
+           
+            <div class="clear"></div>
+        </div><!-- end content -->
+	</div><!-- header -->
+	<div id="toolbar">
+		<div class="box">
+			<a href="/">Index</a>
+			<a href="/items">News</a>
+			<a href="/circles">Circles</a>
+		 <!-- <input type="text" id="search_box"/> -->
+		 <button type="button" id="signin_bn">Sign in</button>
+		 </div><!-- end box-->
+		 <div class="clear"></div>
+	</div><!-- end toolbar -->
+	<!-- content -->
+    $:content	
+	<!-- content -->
+
+	<div class="clear"></div>
+	<div id="footer" class="box">
+        this is footer 
+	</div><!-- footer-->
+</body>
+<script>
+jQuery(function(){
+	jQuery("#signin_bn").click(function(){
+		window.location.replace("/signin");
+	});
+});
+</script>
+</html>

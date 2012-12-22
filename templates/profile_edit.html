@@ -1,0 +1,72 @@
+$def with(info)
+
+<link type="text/css" rel="stylesheet" href="static/style/profile_edit.css"/>
+
+<div id="content" class="box">
+        <div id="profile_nav">
+            <span class="li">
+                <a href="/profile_edit">Edit Profile</a>
+            </span>
+        <span class="separator"> > </span>
+            <span class="li inactive">
+                <a href="/profile_select_tags">Select Tags</a>
+            </span>
+        <span class="separator"> > </span>
+            <span class="li inactive">
+                <a href="/profile_join_circles">Join in Circles</a>
+            </span>
+        </div><!-- end profile_nav -->
+
+        <table id="profile_edit" class="form">
+            <tr>
+                <td>用户名</td><td><input type="text" value="$info['name']"/></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>密码</td><td><input  type="password" value="$info['pwd']"/></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Logo</td><td><input type="text" value=""/></td>
+                <td><button type="button">review</button></td>
+            </tr>
+
+
+            <tr>
+                <td>地点</td><td><input type="text" value="$info['pos']"/></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>大学</td><td><input type="text" value="$info['university']"/></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td>
+                    <button type="button">Update</button>
+                    &nbsp;
+                    &nbsp;
+                    <button type="reset">Cancel</button>
+                </td>
+                <td></td>
+            </tr>
+        </table><!-- circle_create -->
+
+        <div id="logo_review">
+            <img src="http://a3.att.hudong.com/13/08/01300001057368129076086794611_s.jpg"/>
+        </div><!-- logo_review -->
+
+        <div class="clear"></div>
+
+
+</div><!-- end content -->
+
+<script>
+jQuery(function(){
+    jQuery("#content button").button();
+    jQuery("#format").buttonset();
+});
+</script>
