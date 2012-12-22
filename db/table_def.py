@@ -150,7 +150,7 @@ class Station(Base):
     name = Column(String)
 
     #Station to News: one to many
-    news = relationship("News")
+    news = relationship("News", backref="station")
     
     def __init__(self, name):
         self.name = name
@@ -162,7 +162,6 @@ class News(Base):
     
     #Station  to News
     station_id = Column(Integer, ForeignKey("station.id"))
-    station = Column(String(15))
     #news.item  news to Item: one to one
     item = relationship("NewsItem", uselist=False)
 

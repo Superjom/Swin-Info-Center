@@ -122,7 +122,7 @@ def getNews(station):
         res['news'].append(
             {
                 'title':item.title,
-                'station': item.station.name,
+                'station': n.station.name,
                 'date':n.date,
             }
         )
@@ -146,6 +146,7 @@ def getAllNewsList():
             'date': n.date,
             'station': n.station.name
         })
+    return res
 
 def getNewsById(id):
     '''
@@ -279,7 +280,7 @@ if __name__ == '__main__':
     #info = ctrl.getInfo()
     #print info
     '''
-    print getNews(1)
+    print getAllNewsList()
 
     
     

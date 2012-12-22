@@ -217,6 +217,19 @@ def addStations():
     session.commit()
     print "add stations OK!"
 
+def showStations():
+    print "showStations" 
+    stations = session.query(db.Station)
+    for s in stations:
+        print s.id, s.name
+
+def showNews():
+    print "showNews" 
+    news = session.query(db.News)
+    for s in news:
+        print s.id, s.item.title
+    
+
 def addNews():
     #添加首页新闻
     pass
@@ -226,6 +239,7 @@ def push_message():
 
 if __name__ == "__main__":
     
+    '''
     create_circles()
     show_circles()
     create_tags()
@@ -236,4 +250,7 @@ if __name__ == "__main__":
     add_messages()
     show_message()
     addStations()
+    showStations()
+    '''
+    showNews()
     

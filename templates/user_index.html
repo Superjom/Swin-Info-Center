@@ -35,25 +35,25 @@ $def with(userinfo, message_count, messages, news)
 $for new in news:
                 <table>
                     <tr>
-                    <td> 
+                    <td style="width:50px;"> 
                         <a href="#" class="upper"></a>
                         <a href="#" class="downer"></a>
                     </td>
 
                     <td>
-                        <span class="title"><a href="/news?id=$new['id']" style="font-family:'微软雅黑'; ">$new['title'] </a></span>
-                        <span class="subtitle">开始学习的时候，大家都会觉得有一定的意思，所以需要有很多的方法...</span>
+                        <span class="title"><a href="/news?id=$new['id']" style="font-family:'微软雅黑'; ">$new['title'] </a></span><br/>
                         <span class="date">Date:$new['date']</span>
                         <span class="from">$new['station']</span>
                     </td>
                     </tr>
                 </table>
 
-                <a href="#">Read more</a>
-            </div><!-- end tabs-1 -->
+<a href="#">Read more</a>
+</div><!-- end tabs-1 -->
 
-            <div id="tabs-2" class="tab_box" style="padding:0;">
+<div id="tabs-2" class="tab_box" style="padding:0;">
 			
+
 $for message in messages:
     <table class="message">
     <tr>
@@ -70,9 +70,9 @@ $for message in messages:
 		<div id="box_$message['id']" class="message-content">$:message['content']</div>
     </td>
     </tr>
-</table>
-                <a href="#">Read more</a>
-            </div><!-- end tabs-2 -->
+    </table>
+<a href="#">Read more</a>
+</div><!-- end tabs-2 -->
 
             <div id="tabs-3" class="tab_box">
                 <form id="push_message">
