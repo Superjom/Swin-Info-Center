@@ -192,6 +192,7 @@ def add_messages():
          '''
          },
     ]
+
     for m in messages:
         me = db.Message(m['title'], m['summary'], 0, m['date'])
         item = db.MessageItem(m['content'])
@@ -199,6 +200,7 @@ def add_messages():
         session.add(me)
         user = session.query(db.User).filter(db.User.name == 'superjom').first()
         user.messages.append(me)
+        user.ownmessages.append(me)
         session.add(user)
     session.commit()
 
