@@ -1,4 +1,4 @@
-$def with(userinfo, message_count, messages, news)
+$def with(userinfo, message_count, messages, news, circles, tags)
 
 <link rel="stylesheet" href="static/style/style.css" />
 <script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.mouse.js"></script>
@@ -18,8 +18,8 @@ $def with(userinfo, message_count, messages, news)
                 </ul>
                 <hr />
                 <table id="user_new_messages">
-                    <tr class="first_line"><td>3</td> <td>0</td> <td>12</td></tr>
-                    <tr class="second_line"><td>News</td><td>Alert</td><td>activities</td></tr>
+                    <tr class="first_line"><td>23</td> <td>0</td> <td>12</td></tr>
+                    <tr class="second_line"><td>News</td><td>Follower</td><td>Messages</td></tr>
                 </table>
 
             </div><!-- end div -->
@@ -32,6 +32,7 @@ $def with(userinfo, message_count, messages, news)
                 <li><a href="#tabs-3">Push your message</a></li>
 			</ul>
             <div id="tabs-1" class="tab_box">
+            <div id="news-box">
 $for new in news:
                 <table>
                     <tr>
@@ -41,14 +42,18 @@ $for new in news:
                     </td>
 
                     <td>
-                        <span class="title"><a href="/news?id=$new['id']" style="font-family:'微软雅黑'; ">$new['title'] </a></span><br/>
+                        <span class="title"><a href="/sigle?id=$new['id']" style="font-family:'微软雅黑'; ">$new['title'] </a></span><br/>
                         <span class="date">Date:$new['date']</span>
                         <span class="from">$new['station']</span>
                     </td>
                     </tr>
                 </table>
 
-<a href="#">Read more</a>
+</div><!-- end news-box -->
+<input id="news_page_val" type="hidden" val=1/>
+<img src="static/images/btn-back-to-top.png"  id="back_to_top"/> 
+<a href="#" id="news_show_more">Show More</a>
+
 </div><!-- end tabs-1 -->
 
 <div id="tabs-2" class="tab_box" style="padding:0;">
@@ -76,27 +81,54 @@ $for message in messages:
 
             <div id="tabs-3" class="tab_box">
                 <form id="push_message">
+
+<!-- dialog -------------------------------------->
+<div id="dialog-message" title="Filter Tags">
+    <div>
+
+<select name='circle'>
+$for c in circles:
+    <option value='$c["id"]'>$c['name']</option>
+</select>
+    </div>
+    <table id="tags">
+$for t in tags:
+        <tr>
+            <td class="yn">
+                <!--
+                <input name='tag$t["id"]' type="radio" id="1check$loop.index"  value=' OR $t["name"]'/><label for="1check$loop.index">OR</label>
+                -->
+                <input value=' AND $t["name"]' type="checkbox" id="2check$loop.index" /><label for="2check$loop.index">$t['name']</label>
+                <!-- 
+                <input name='tag$t["id"]' value=' NOT $t["name"]' type="radio" id="3check$loop.index" /><label for="3check$loop.index">NOT</label>
+                -->
+            </td>
+        </tr>
+</table>
+</div>
+<!-- dialog -------------------------------------->
+
                     <table>
 						<tr>
 							<td valign="top"><button id="filter_bn" type="button">Filter</button></td>
-							<td><input type="text" /></td>
+							<td><input id='filter_input' name='filter_input' type="text" /></td>
 						</tr>
                         <tr>
                             <td valign="top">Title</td>
-                            <td><input id="title" type="text" /></td>
+                            <td><input name='title' id="title" type="text" /></td>
 						</tr>
                         <tr>
 							<td valign="top">Summary</td>
-							<td><textarea id="summary"></textarea></td>
+							<td><textarea  name='summary' id="summary"></textarea></td>
 						</tr>
 						<tr>
 							<td valign="top">Message</td>
-							<td><textarea id="message"></textarea></td>
+							<td><textarea name='content' id="message"></textarea></td>
 						</tr>
                         <tr>
                             <td></td>
                             <td>
-                                <button type="button">Push</button>
+                                <button type="button" id='push'>Push</button>
 								<button type="reset">Cancel</button>
 							</td>
                         </tr>
@@ -106,32 +138,12 @@ $for message in messages:
             </div><!-- end tabs-3 -->
 		</div><!-- baright -->
 </div><!-- end content -->
-<div id="dialog-message" title="Filter Tags">
-    <div>
-		<select>
-			<option>信息协会</option>
-			<option>足球协会</option>
-		</select>
-    </div>
-    <table id="tags">
-        <tr>
-            <td>男生</td>
-            <td class="yn">
-                <input type="radio" id="check1" /><label for="check1">OR</label>
-                <input type="radio" id="check2" /><label for="check2">男生</label>
-                <input type="radio" id="check3" /><label for="check3">NOT</label>
-            </td>
-        </tr>
-        <tr>
-            <td>女生</td>
-            <td class="yn">
-                <input type="checkbox" id="check4" /><label for="check4">OR</label>
-                <input type="checkbox" id="check5" /><label for="check5">男生</label>
-                <input type="checkbox" id="check6" /><label for="check6">NOT</label>
-            </td>
-        </tr>
-    </table>
-</div>
+
+
+<div id="push-message" title="推送对象">
+    <p>您的信息已经推送给：</p>
+</div><!-- end dialog-message -->
+
 <script>
 jQuery(function(){
     jQuery("#baright").tabs();
@@ -147,14 +159,21 @@ jQuery(function(){
 		return false;
     });
 
-
-
     // dialog
     jQuery( "#dialog-message" ).dialog({
         modal: true,
         autoOpen: false,
         buttons: {
             Ok: function() {
+                //ok
+                //filter_input 
+                var txt = '';
+                var tags = jQuery('td.yn input[type="checkbox"]:checked');
+                tags.each(function(){
+                    txt = txt + jQuery(this).val();
+                });
+                //alert(txt);
+                jQuery("#filter_input").val(txt);
                 jQuery( this ).dialog( "close" );
             }
         }
@@ -165,8 +184,107 @@ jQuery(function(){
         return false;
     });	
 
+    //back to top
+    jQuery("#back_to_top").click(function(){
+            jQuery("html, body").animate({ 
+                scrollTop: "0px"
+            }, 700);
+    });
 
-	
-	
+    //load more pages
+    jQuery("#news_show_more").click(function(){
+        //ajax load more page
+        var page = jQuery("#news_page_val").val();
+        //add page
+        jQuery("#news_page_val").val(page+1);
+        //ajax
+        jQuery.get('ajax/load_more_news',
+            { page: page },
+            function(data) {
+            //succeed
+            var _new = jQuery(data);
+            jQuery("div#news-box").append(_new);
+            var tables = jQuery("div#news-box table.hidden");
+            tables.each(function(){
+                var _this = jQuery(this);
+                _this.fadeIn(1000);
+                //_this.slideDown(3000);
+            });
+            jQuery("html, body").animate({ 
+                scrollTop: jQuery(document).height()
+            }, 1000);
+        });
+        return false;
+    });
+
+
+
+
+
+
+
+
+
+
 });
+
+//filter_input
+
+    jQuery( "#push-message" ).dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            Ok: function() {
+                //ok
+                jQuery( this ).dialog( "close" );
+            }
+        }
+    });
+//submit message
+jQuery("button#push").click(function(){
+    var url = "/ajax/push_message";    
+    jQuery.ajax({
+        type: "POST",
+        url: url,
+        data: jQuery("#push_message").serialize(),
+        success: function(data)
+        {
+            //method
+            //alert(data);
+            var _userlist = jQuery(data);
+            jQuery("#push-message").append(_userlist);
+            //show dialog
+            jQuery("#push-message").dialog("open");
+        }
+    });
+    return false;
+});
+
+//动态刷新message
+function updateMessage(){
+    jQuery.ajax({
+        type: "POST",
+        url: "/ajax/get_update_messages",
+        data:{user_id: 1},
+        success: function(data)
+        {
+            //alert(data);          
+            //add content to first
+            var _content = jQuery(data);
+            jQuery("#tabs-2").prepend(_content);
+            //start to show
+            var _ms = jQuery("#tabs-2 table.hidden");
+            _ms.each(function(){
+                var _this = jQuery(this);
+                _this.fadeIn(2000);
+                _this.removeClass(2000);
+            });
+        }
+    });
+}
+
+setInterval("updateMessage()", 5000);
+
+
+
 </script>

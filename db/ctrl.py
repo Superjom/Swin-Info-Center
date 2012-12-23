@@ -9,6 +9,15 @@ from sqlalchemy import  create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
 
+news_page_num = 7
+message_page_num = 7
+
+def createSession():
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session
 
 def transP(text):
     res = ''
@@ -49,6 +58,36 @@ def userInfo(userid):
     }
     return res
 
+def userGetUpdateMessages(userid):
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    '''
+    user = session.query(db.User).filter(db.User.id == userid).first()
+    messages = user.messages
+    res = []
+    '''
+    messages = session.query(db.Message).filter(db.Message.status == -1)
+    res = []
+    for m in messages:
+        #change status to avoid duplicate change
+        m.status = 0
+        session.add(m)
+        res.append(
+            {
+             'id':m.id,
+             'title': m.title,
+             'date': m.date,
+             'summary': m.summary,
+             'content': transP(m.item.content),
+             }
+        )
+    session.commit()
+    res.reverse()
+    return res
+    
+
 def userGetMessages(userid):
     userid = 1
     
@@ -74,7 +113,43 @@ def userGetMessages(userid):
              'content': transP(m.item.content),
              }
         )
+    res.reverse()
     return result
+
+
+def pushMessage(circle, filter_sql, title, summary, content, date = datetime.datetime.today()):
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=True)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    #find users by circle
+    circle = session.query(db.Circle).filter(db.Circle.id == int(circle)).first()
+    users = circle.users
+    #filter users
+    tem = []
+    keywords = [word.strip() for word in filter_sql.split('AND')]
+    for user in users:
+        tags = [tag.name for tag in user.tags]
+        flag = True
+        for word in keywords:
+            if not word: continue
+            flag = flag and (word in tags)
+        if flag:
+            tem.append(user)
+    users = tem 
+    status = -1
+    message = db.Message(title, summary, status, date)
+    messageitem = db.MessageItem(content)
+    message.item = messageitem
+    session.add(message)
+    session.add(messageitem)
+    for user in users:
+        print 'push to users:', user.name
+        user.messages.append(message)
+        session.add(user)
+    session.commit()
+        
+
 
 def userGetContent(contentid):
     '''
@@ -89,7 +164,113 @@ def userGetContent(contentid):
     content = message.content
     return content
 
+#-------------------------------- tags ----------------
+# filter users by tags and circle
+def filterUsers(circle_id, tagsql):
+    print '-'*50
+    print 'filter:'
+    print circle_id, tagsql
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    #find users by circle
+    circle = session.query(db.Circle).filter(db.Circle.id == circle_id).first()
+    users = circle.users
+    print 'users', len(users)
+    print len(users)
+    #filter users
+    tem = []
+    keywords = [word.strip() for word in tagsql.split('AND')]
+    for user in users:
+        tags = [tag.name for tag in user.tags]
+        #print 'tags:', tags
+        #print 'keyword', keywords
+        flag = True
+        #print 'in?', keywords[0] in keywords
+        for word in keywords:
+            if not word: continue
+            flag = flag and (word in tags)
+        if flag:
+            tem.append(user)
+    print 'tem', tem
+    #pack res
+    res = []
+    for user in tem:
+        res.append({
+            'id': user.id,
+            'name': user.name,
+            'logo_url':'',#user.logo_url,
+        })
+    print 'res', res
+    return res
+            
 
+#-------------------------------- circle ---------------
+def getAllCircleList():
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    circles = session.query(db.Circle)
+    res = []
+    for c in circles:
+        res.append(
+            {'id': c.id,
+            'name': c.name,
+            }
+        )
+    return res
+
+def getUserCircle(user_id):
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    res = []
+    user = session.query(db.User).filter(db.User.id == user_id).first()
+    circles = user.circles
+    for c in circles:
+        res.append(
+            {'id': c.id,
+            'name': c.name,
+            }
+        )
+    return res
+
+#-------------------------------tags-------------------
+def getUserTags(user_id):
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    res = []
+    user = session.query(db.User).filter(db.User.id == user_id).first()
+    tags = user.tags
+    for t in tags:
+        res.append(
+            {'id': t.id,
+            'name': t.name,
+            }
+        )
+    return res
+
+def getTags():
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    res = []
+    tags = session.query(db.Tag)
+    for t in tags:
+        res.append(
+            {'id': t.id,
+            'name': t.name,
+            }
+        )
+    return res
+    
+    
 #-------------------------------- news -----------------------------------
 import types
 def getNews(station):
@@ -111,9 +292,9 @@ def getNews(station):
         '''
         s = session.query(db.Station).filter(db.Station.id == station).first()
         news = s.news
-        res['kind'] = s.name
+        res['station'] = s.name
     else:
-        res['kind'] = station
+        res['station'] = station
         s = session.query(db.Station).filter(db.Station.name == station).first()
         news = s.news
     res['news'] = []
@@ -121,6 +302,7 @@ def getNews(station):
         item = n.item
         res['news'].append(
             {
+                'id': n.id,
                 'title':item.title,
                 'station': n.station.name,
                 'date':n.date,
@@ -128,7 +310,7 @@ def getNews(station):
         )
     return res
 
-def getAllNewsList():
+def getAllNewsList(page=-1):
     '''
     the news index
     '''
@@ -136,9 +318,13 @@ def getAllNewsList():
     # create a Session
     Session = sessionmaker(bind=engine)
     session = Session()
-
+    
     res = []
-    news = session.query(db.News)
+    #split page
+    if page == -1:
+        news = session.query(db.News)
+    else:
+        news = session.query(db.News)[page * news_page_num : (page+1) * news_page_num]
     for n in news:
         res.append({
             'id': n.id,
@@ -164,9 +350,17 @@ def getNewsById(id):
     res = {}
     res['title'] = news.item.title
     res['content'] = news.item.content
-    res['date'] = news.item.date
+    res['date'] = news.date
     res['station'] = news.station.name
     return res
+
+def getStationName(id):
+    engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+    # create a Session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    name = session.query(db.Station.name).filter(db.Station.id == id).first()
+    return name
 
 def getStations():
     '''
@@ -184,6 +378,7 @@ def getStations():
         res.append(
             {'name': s.name,
             'id':s.id,
+            'num':len(s.news),
             }
         )
     return res
@@ -279,12 +474,17 @@ if __name__ == '__main__':
     print 'getid', id
     #info = ctrl.getInfo()
     #print info
-    '''
     print getAllNewsList()
+    print filterUsers(1, u'橄榄球')
+    '''
+    messages =  userGetMessages(1)
+    for m in messages['messages']:
+        print m['title']
 
     
     
     
+
     
     
     

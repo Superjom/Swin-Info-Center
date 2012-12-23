@@ -1,0 +1,7 @@
+$def with(users)
+
+<table>
+$for user in users:
+    <tr><td><img style="width:70px;" src='$user["logo_url"]'/></td>
+    <td>$user['name']</td> </tr>
+</table>

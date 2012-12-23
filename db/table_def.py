@@ -52,6 +52,7 @@ class User(Base):
     pos = Column(String(25))
     university = Column(String(25))
     score = Column(Float)
+    logo_url = Column(String)
 
     # more to more:  user to tag
     tags = relationship("Tag",
@@ -71,19 +72,21 @@ class User(Base):
 
     # user.messages : one to many
     messages = relationship("Message")
+    own_messages = relationship("Message")
     #many to many: user to station
     stations = relationship("Station",
             secondary = user_station_association,
             backref = "users"
     )
 
-    def __init__(self, name, pwd, email, pos, university, score=1):
+    def __init__(self, name, pwd, email, pos, university, score=1, logo_url=''):
         self.name = name
         self.pwd = pwd
         self.email = email
         self.pos = pos
         self.university = university
         self.score = score
+        self.logo_url = ''
 
 class Tag(Base):
     __tablename__ = "tag"
@@ -121,8 +124,13 @@ class Message(Base):
     summary = Column(String)
     #user.messages:     user to message: one to many
     user_id = Column(Integer, ForeignKey("user.id"))
+    #owner
+    owner_id = Column(Integer, ForeignKey("user.id"))
     #message.item   one to one
     item = relationship("MessageItem", uselist=False)
+    #follower
+    followers = relationship("User")
+    replys = relationship("Reply")
 
     def __init__(self, title, summary, status, date):
         self.title = title

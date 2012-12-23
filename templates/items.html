@@ -1,68 +1,40 @@
+$def with(station_name, newslist, stations)
+
 <link rel="stylesheet" href="static/style/items.css" />
 <script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.button.js"></script>
        <span id="section_title" class="box">
-            Campus News
+            $station_name
         </span>
 	<div id="content" class="box">
 		<div id="barleft">
 
-             <table>
+$for new in newslist:
+                <table>
                     <tr>
-                    <td> 
+                    <td style="width:50px;"> 
                         <a href="#" class="upper"></a>
                         <a href="#" class="downer"></a>
                     </td>
 
                     <td>
-                        <span class="title"><a href="#" style="font-family:'微软雅黑'; ">人文社会科学学院首改学生会制度和架构 </a></span>
-                        <span class="subtitle">开始学习的时候，大家都会觉得有一定的意思，所以需要有很多的方法...</span>
-                        <span class="date">Date:2012-6-12</span>
-                        <span class="from">研究生院</span>
+                        <span class="title"><a href="/sigle?id=$new['id']" style="font-family:'微软雅黑'; ">$new['title'] </a></span><br/>
+                        <span class="date">Date:$new['date']</span>
+                        <span class="from">$new['station']</span>
                     </td>
                     </tr>
                 </table>
 
-             <table>
-                    <tr>
-                    <td> 
-                        <a href="#" class="upper"></a>
-                        <a href="#" class="downer"></a>
-                    </td>
+<a href="#">Show More</a>
 
-                    <td>
-                        <span class="title"><a href="#" style="font-family:'微软雅黑'; ">人文社会科学学院首改学生会制度和架构 </a></span>
-                        <span class="subtitle">开始学习的时候，大家都会觉得有一定的意思，所以需要有很多的方法...</span>
-                        <span class="date">Date:2012-6-12</span>
-                        <span class="from">研究生院</span>
-                    </td>
-                    </tr>
-                </table>
-
-             <table>
-                    <tr>
-                    <td> 
-                        <a href="#" class="upper"></a>
-                        <a href="#" class="downer"></a>
-                    </td>
-
-                    <td>
-                        <span class="title"><a href="#" style="font-family:'微软雅黑'; ">人文社会科学学院首改学生会制度和架构 </a></span>
-                        <span class="subtitle">开始学习的时候，大家都会觉得有一定的意思，所以需要有很多的方法...</span>
-                        <span class="date">Date:2012-6-12</span>
-                        <span class="from">研究生院</span>
-                    </td>
-                    </tr>
-                </table>
 			
 		</div><!-- barleft -->
 
-		<div id="baright">
-            <a href="#">研究生院(7)</a>
-            <a href="#">信息工程学院(7)</a>
-            <a href="#">城市发展学院(7)</a>
-            <a href="#">汇丰商学院(7)</a>
-            <a href="#">国际法学院(7)</a>
-		</div><!-- baright -->
+<div id="baright">
+$for s in stations:
+    <a href="/items?station_id=$s['id']">$s['name']
+        ($s['num'])
+    </a>
+</div><!-- baright -->
 		
 	</div><!-- content -->
 	

@@ -59,6 +59,6 @@ class SwinSpider(CrawlSpider):
         content = hxs.select('//div[contains(@id,"content")]').extract()
         if content:
             item['content'] = content[0]
-        item['station'] = u'深圳研究生院官网'
+            item['station'] = u'深圳研究生院官网'
         yield item
 

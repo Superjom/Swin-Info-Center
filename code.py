@@ -11,7 +11,8 @@ web.config.debug = False
 import db.ctrl as ctrl
 
 urls = (
-    "/", "index",
+    "/", "login",
+    "/user_index", "user_index",
     "/profile", "user_profile",
     "/profile_edit", "profile_edit",
     "/profile_select_tags", "profile_select_tags",
@@ -19,30 +20,41 @@ urls = (
     
     "/login", "login",
     "/signin(.*)", "signin",
-    "/items", "items",
+    "/items(.*)", "items",
+
+    "/ajax/push_message(.*)", "ajax_push_message",
+    "/ajax/get_update_messages(.*)", "ajax_get_update_messages",
     
     "/circles", "circles",
     "/add_circle(.*)", "add_circle",
-    "/sigle", "sigle",
+    "/sigle(.*)", "sigle",
     "/hello*", "hello",
+    # --------------- ajax ---------------------
+    "/ajax/load_more_news(.*)", "load_more_news",
 )
 app = web.application(urls, globals())
-session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'userid': 1})
+session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'userid': -1})
 #user database ctrl
 
 class hello:
     def GET(self):
         return "Hello, world"
     
-class index:
+class user_index:
     def GET(self):
         #t = web.template.frender('templates/index.html')
         render = web.template.render("templates/", base="template")
-        assert session.userid != -1
+        print '@'*50
+        print 'session.userid', session.userid
+        if session.userid == -1:
+            return render.login()
+
         userinfo = ctrl.userInfo(session.userid)
         messages = ctrl.userGetMessages(session.userid)
-        news = ctrl.getAllNewsList()
-        return render.user_index(userinfo, messages['count'], messages['messages'], news)
+        news = ctrl.getAllNewsList(0)
+        circles = ctrl.getUserCircle(session.userid)
+        tags = ctrl.getTags()
+        return render.user_index(userinfo, messages['count'], messages['messages'], news, circles, tags)
        
     
 class user_profile:
@@ -95,6 +107,47 @@ class add_circle:
         render = web.template.render("templates/", base="template")
         return render.circles()
         
+class load_more_news:
+    def GET(self, data):
+        data = web.input()
+        page = data['page']
+        news = ctrl.getAllNewsList(1)
+        print '@'*50
+        print 'get news page:', news
+        render = web.template.frender("templates/ajax_load_more_news.html")
+        return render(news)
+
+
+
+#push message and return the filted
+#users name and logo
+class ajax_push_message:
+    def POST(self, data):
+        data = web.input()
+        print '@' * 50
+        print data
+        circle = 1
+        filter_input = data['filter_input']
+        title = data['title']
+        summary = data['summary']
+        content = data['content']
+        user = ctrl.filterUsers(circle, filter_input)
+        print 'get ursers', user
+        #push message
+        ctrl.pushMessage(circle, filter_input, title, summary, content)
+        render = web.template.frender("templates/ajax_push_message.html")
+        return render(user)
+
+
+class ajax_get_update_messages:
+    def POST(self, data):
+        data = web.input()
+        user_id = session.userid
+        messages = ctrl.userGetUpdateMessages(int(user_id))
+        render = web.template.frender("templates/ajax_get_update_messages.html")
+        return render(messages)
+
+
 
 class signin:
     def GET(self, data):
@@ -113,25 +166,38 @@ class signin:
         user = ctrl.User()
         user_id = user.login(data['username'], data['pwd'])
         if user_id!= -1:
-            _login = login()
+            _user_index = user_index()
             session.userid = user_id
             print '>'*50
-            return _login.GET()
+            return _user_index.GET()
         print '>'*50
         render = web.template.render("templates/", base="template")
         return render.signin()    
 
 class items:
-    def GET(self):
+    def GET(self, data):
+        data = web.input()
+        station_id = data['station_id']
         #t = web.template.frender('templates/index.html')
         render = web.template.render("templates/", base="template")
-        return render.items()
+        #station_name = ctrl.getStationName(station_id)
+        news = ctrl.getNews(int(station_id))
+        stations = ctrl.getStations()
+        station_name = news['station']
+        newslist = news['news']
+        return render.items(station_name, newslist, stations)
 
 class sigle:
-    def GET(self):
+    def GET(self, data):
         #t = web.template.frender('templates/index.html')
         render = web.template.render("templates/", base="template")
-        return render.sigle()    
+        data = web.input()
+        news = ctrl.getNewsById(data['id'])
+        stations = ctrl.getStations()
+        print '@' * 50
+        print 'news:', news['title']
+        print 'stations:', stations
+        return render.sigle(news, stations)    
     
 if __name__ == "__main__":
     app.run()

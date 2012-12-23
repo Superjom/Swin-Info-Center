@@ -1,0 +1,20 @@
+$def with(messages)
+
+$for message in messages:
+    <table class="message hidden" style="display:none;">
+    <tr>
+    <td valign="top"> 
+        <a href="#" class="upper"></a>
+        <a href="#" class="downer"></a>
+    </td>
+
+    <td>
+        <span class="title"><a href="#" class="title" tobox="$message['id']" style="font-family:'微软雅黑'; ">$message['title'] </a></span>
+        <span class="subtitle">$message['summary']</span>
+        <span class="date">Date:$message['date']</span>
+        <span class="from">研究生院</span>
+		<div id="box_$message['id']" class="message-content">$:message['content']</div>
+    </td>
+    </tr>
+    </table>
+

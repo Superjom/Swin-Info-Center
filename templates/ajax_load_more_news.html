@@ -1,0 +1,17 @@
+$def with(news)
+
+$for new in news:
+                <table class="hidden" style="display:none;">
+                    <tr>
+                    <td style="width:50px;"> 
+                        <a href="#" class="upper"></a>
+                        <a href="#" class="downer"></a>
+                    </td>
+
+                    <td>
+                        <span class="title"><a href="/sigle?id=$new['id']" style="font-family:'微软雅黑'; ">$new['title'] </a></span><br/>
+                        <span class="date">Date:$new['date']</span>
+                        <span class="from">$new['station']</span>
+                    </td>
+                    </tr>
+                </table>
