@@ -38,6 +38,12 @@ admin_circle_association = Table('admin_circle_association', Base.metadata,
         Column("circle_id", Integer, ForeignKey("circle.id")),
 )
 
+own_message_association = Table('own_message_association', Base.metadata,
+        Column("user_id", Integer, ForeignKey("user.id")),
+        Column("message_id", Integer, ForeignKey("message.id")),
+)
+
+
 user_station_association = Table('user_station_association', Base.metadata,
         Column("user_id", Integer, ForeignKey("user.id")),
         Column("station_id", Integer, ForeignKey("station.id")),
@@ -69,10 +75,17 @@ class User(Base):
             secondary = admin_circle_association,
             backref = "admins"
     )
-
+    
+    ownmessages = relationship("Message",
+            secondary = own_message_association,
+            backref = "owners"
+    )
+    
+    #message_id = Column(Integer, ForeignKey("message.id"))
+    #message_id = Column(Integer, ForeignKey("message.id"))
     # user.messages : one to many
     messages = relationship("Message")
-    own_messages = relationship("Message")
+    #own_messages = relationship("Message")
     #many to many: user to station
     stations = relationship("Station",
             secondary = user_station_association,
@@ -125,17 +138,28 @@ class Message(Base):
     #user.messages:     user to message: one to many
     user_id = Column(Integer, ForeignKey("user.id"))
     #owner
-    owner_id = Column(Integer, ForeignKey("user.id"))
+    #owner_id = Column(Integer, ForeignKey("user.id"))
     #message.item   one to one
     item = relationship("MessageItem", uselist=False)
     #follower
-    followers = relationship("User")
+    followers = relationship("Follower")
     replys = relationship("Reply")
 
     def __init__(self, title, summary, status, date):
         self.title = title
         self.summary = summary
         self.status = status
+        self.date = date
+        
+class Follower(Base):
+    __tablename__ = "follower"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    date = Column(Date)
+    message_id = Column(Integer, ForeignKey("message.id"))
+    
+    def __init__(self, name, date):
+        self.name = name
         self.date = date
 
 class Reply(Base):
@@ -145,7 +169,8 @@ class Reply(Base):
     status = Column(Integer)
     #reply.item     one to one
     item = relationship("ReplyItem", uselist=False)
-
+    message_id = Column(Integer, ForeignKey("message.id"))
+    
     def __init__(self, date, status):
         self.date = date
         self.status = status

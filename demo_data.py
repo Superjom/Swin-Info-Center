@@ -112,9 +112,9 @@ def create_tags():
     session.commit()
 
 def create_user():
-    user = db.User("superjom2", "511541", "superjom@gmail.com", \
+    user = db.User("superjom", "511541", "superjom@gmail.com", \
                         "Shenzhen,Guang dong", "Peking University")
-    user = db.User("shasha", "511541", "shasha@gmail.com", \
+    user1 = db.User("shasha", "511541", "shasha@gmail.com", \
                         "Beijin", u"北理工")
     #加入一些社团
     circles = session.query(db.Circle).filter(
@@ -122,13 +122,16 @@ def create_user():
     for c in circles:
         print c.name
         user.circles.append(c)
+        user1.circles.append(c)
     
     tags = session.query(db.Tag).filter(
                 or_(db.Tag.name == u"江苏", db.Tag.name == u"橄榄球")
             )
     for tag in tags:
         user.tags.append(tag)
+        user1.tags.append(tag)
     session.add(user)
+    session.add(user1)
     session.commit()
     
 def show_users():
@@ -242,18 +245,15 @@ def push_message():
 
 if __name__ == "__main__":
     
-    '''
     create_circles()
-    show_circles()
     create_tags()
-    
+    create_user()
+    show_circles()
     show_circleusers()
     add_messages()
     addStations()
     showStations()
     showNews()
-    create_user()
     show_users()
-    '''
     show_message()
     

@@ -1,0 +1,90 @@
+$def with(userinfo, messages)
+
+<link rel="stylesheet" href="static/style/style.css" />
+
+<style>
+
+table.message a{
+    font-size: 20px;
+    color:#4183c4;
+}
+span#title{
+	font-family:"微软雅黑", "Times New Roman";
+    display:block;
+    color:#999;
+    font-size:34px;
+}
+
+span.title{
+	font-family:"微软雅黑", "Times New Roman";
+    display:block;
+    color:#000;
+}
+span.subtitle{
+    font-size:19px;
+	font-family:"微软雅黑", "Times New Roman";
+    display:block;
+    color:#000;
+}
+span.date{
+    color:#999;
+}
+</style>
+<div id="content" class="box">
+		<div id="barleft">
+			<img id="user_img" src="static/images/user.jpg" />
+            <div style="width:100%; padding:10px;">
+                <span id="user_name">$userinfo['name']</span>
+                    <hr />
+                <ul id="user_profile">
+                    <li>$userinfo['university']</li>
+                    <li>$userinfo['email']</li>
+                    <li>$userinfo['pos']</li>
+                </ul>
+                <hr />
+                <table id="user_new_messages">
+                    <tr class="first_line"><td>23</td> <td>0</td> <td>12</td></tr>
+                    <tr class="second_line"><td>News</td><td>Follower</td><td>Messages</td></tr>
+                </table>
+
+            </div><!-- end div -->
+		</div><!-- barleft -->
+		
+		<div id="baright">
+
+        <span id="title">Followers</span>
+$for message in messages:
+    <table class="message">
+    <tr>
+    <td valign="top"> 
+        <a href="#" class="upper"></a>
+        <a href="#" class="downer"></a>
+    </td>
+
+    <td>
+        <span class="title"><a href="#" class="title" tobox="$message['id']" style="font-family:'微软雅黑'; ">$message['title'] </a></span>
+        <span class="date">Date:$message['date']</span>
+        <span class="from">研究生院</span>
+		<div id="box_$message['id']" class="message-content" style="font-size:20px;">
+        $for f in message['followers']:
+            <p><a href='#'>$f['name']</a><p>
+        </div>
+        
+    </td>
+    </tr>
+    </table>
+		</div><!-- baright -->
+</div><!-- end content -->
+
+
+
+<script>
+    // ajax 传回message内容
+    jQuery("table.message a.title").click(function(){
+        var _this = jQuery(this);
+        var id = _this.attr("tobox");
+        var _content = jQuery("#box_" + id);
+        _content.show(1000);
+		return false;
+    });
+</script>

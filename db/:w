@@ -117,7 +117,7 @@ def userGetMessages(userid):
     return result
 
 
-def pushMessage(owner_id, circle, filter_sql, title, summary, content, date = datetime.datetime.today()):
+def pushMessage(circle, filter_sql, title, summary, content, date = datetime.datetime.today()):
     engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=True)
     # create a Session
     Session = sessionmaker(bind=engine)
@@ -141,61 +141,21 @@ def pushMessage(owner_id, circle, filter_sql, title, summary, content, date = da
     message = db.Message(title, summary, status, date)
     messageitem = db.MessageItem(content)
     message.item = messageitem
-    #ownership
-    user = session.query(db.User).filter(db.User.id == owner_id).first()
-    user.ownmessages.append(message)
     session.add(message)
     session.add(messageitem)
-    #push to certain users
     for user in users:
         print 'push to users:', user.name
         user.messages.append(message)
         session.add(user)
     session.commit()
         
-
-#----------- follow ------------------------
 def follow(userid, messageid):
     session = createSession()
     user = session.query(db.User).filter(db.User.id == userid).first()
     message = session.query(db.Message).filter(db.Message.id == messageid).first()
-    print 'follow %s to %s' % (user.name, message.date)
-    follower = db.Follower(user.name, datetime.datetime.today())
-    message.followers.append(follower)
-    session.add(follower)
-    session.add(message)
-    session.commit()
 
-def getFollowers(session ,messageid):
-    message = session.query(db.Message).filter(db.Message.id == messageid).first()
-    followers = message.followers
-    res = []
-    for f in followers:
-        res.append({
-            'id': f.id,
-            'name': f.name, 
-        })
-    return res
-
-def getOwnMessages(userid):
-    session = createSession()
-    user = session.query(db.User).filter(db.User.id == userid).first()
-    messages = user.ownmessages
-    res = []
-    for m in messages:
-        f = getFollowers(session, m.id)
-        if not f: f=[]
-        res.append({
-            'id': m.id,
-            'title' : m.title,
-            'summary': m.summary,
-            'date': m.date,
-            'followers': f,
-        })
-    return res
-
-#>>>>>>>>>>>>.>>>>>>>>>>>>.>>>>>>>>>>>>.>>>>>>>>>>>>.
-
+    
+    
 
 
 def userGetContent(contentid):
@@ -523,18 +483,10 @@ if __name__ == '__main__':
     #print info
     print getAllNewsList()
     print filterUsers(1, u'橄榄球')
+    '''
     messages =  userGetMessages(1)
     for m in messages['messages']:
         print m['title']
-    messages = getOwnMessages(1)
-    print messages
-    '''
-    follow(1, 3)
-    session = createSession()
-    messages = session.query(db.Message)
-    for m in messages:
-        print getFollowers(session, m.id)
-    
 
     
     

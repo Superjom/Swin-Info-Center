@@ -19,7 +19,7 @@ $def with(userinfo, message_count, messages, news, circles, tags)
                 <hr />
                 <table id="user_new_messages">
                     <tr class="first_line"><td>23</td> <td>0</td> <td>12</td></tr>
-                    <tr class="second_line"><td>News</td><td>Follower</td><td>Messages</td></tr>
+                    <tr class="second_line"><td>News</td><td><a href="/own_messages">Follower</a></td><td>Messages</td></tr>
                 </table>
 
             </div><!-- end div -->
@@ -69,6 +69,7 @@ $for message in messages:
 
     <td>
         <span class="title"><a href="#" class="title" tobox="$message['id']" style="font-family:'微软雅黑'; ">$message['title'] </a></span>
+        <button class="follow" type="button" to="$message['id']">Follow</button>
         <span class="subtitle">$message['summary']</span>
         <span class="date">Date:$message['date']</span>
         <span class="from">研究生院</span>
@@ -144,9 +145,35 @@ $for t in tags:
     <p>您的信息已经推送给：</p>
 </div><!-- end dialog-message -->
 
+<div id="follow-message" title="Succeed follow">
+    <p>Succeed follow!</p>
+</div><!-- end dialog-message -->
 <script>
 jQuery(function(){
     jQuery("#baright").tabs();
+
+    jQuery( "#follow-message" ).dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            Ok: function() {
+                //ok
+                jQuery( this ).dialog( "close" );
+            }
+        }
+    });
+
+    jQuery("button.follow").button().click(function(){
+        var _to = jQuery(this).attr('to');        
+        
+        jQuery.get('ajax/follow',{to:_to},
+            function(data) {
+                //alert('ok');
+                jQuery("#follow-message").dialog("open");
+            });
+    });
+        
+
 	jQuery("form#push_message button").button();
 	jQuery("#tags").buttonset();
 

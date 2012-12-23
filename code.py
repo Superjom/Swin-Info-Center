@@ -21,9 +21,11 @@ urls = (
     "/login", "login",
     "/signin(.*)", "signin",
     "/items(.*)", "items",
+    "/own_messages", "own_messages",
 
     "/ajax/push_message(.*)", "ajax_push_message",
     "/ajax/get_update_messages(.*)", "ajax_get_update_messages",
+    "/ajax/follow(.*)", "ajax_follow",
     
     "/circles", "circles",
     "/add_circle(.*)", "add_circle",
@@ -118,6 +120,16 @@ class load_more_news:
         return render(news)
 
 
+class own_messages:
+    def GET(self):
+        userinfo = ctrl.userInfo(session.userid)
+        messages = ctrl.getOwnMessages(session.userid)
+        print '--'*50
+        print 'messages:'
+        print messages
+        render = web.template.render("templates/", base="template")
+        return render.own_messages(userinfo, messages)
+
 
 #push message and return the filted
 #users name and logo
@@ -134,10 +146,16 @@ class ajax_push_message:
         user = ctrl.filterUsers(circle, filter_input)
         print 'get ursers', user
         #push message
-        ctrl.pushMessage(circle, filter_input, title, summary, content)
+        ctrl.pushMessage(session.userid, circle, filter_input, title, summary, content)
         render = web.template.frender("templates/ajax_push_message.html")
         return render(user)
 
+class ajax_follow:
+    def GET(self, data):
+        data = web.input()
+        messageid = data['to']
+        ctrl.follow(session.userid, messageid)
+        return 'ok'
 
 class ajax_get_update_messages:
     def POST(self, data):
