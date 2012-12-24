@@ -31,6 +31,13 @@ div#baright a{
     display:block;
     color:#4183c4;
 }
+
+
+img#back_to_top{
+    width:100px;
+    cursor:pointer;
+    float:right;
+}
 </style>
 	<div id="content" class="box">
 		<div id="barleft">
@@ -39,6 +46,7 @@ div#baright a{
             <div id="content">
             $:news['content']
             </div>
+<img src="static/images/btn-back-to-top.png"  id="back_to_top"/> 
 		</div><!-- barleft -->
 
 		<div id="baright">
@@ -49,5 +57,13 @@ $for s in stations:
 </div><!-- baright -->
 		
 </div><!-- content -->
+<script>
+    //back to top
+    jQuery("#back_to_top").click(function(){
+            jQuery("html, body").animate({ 
+                scrollTop: "0px"
+            }, 700);
+    });
+</script>
 	
 	

@@ -117,42 +117,57 @@ def userGetMessages(userid):
     return result
 
 
-def pushMessage(owner_id, circle, filter_sql, title, summary, content, date = datetime.datetime.today()):
+def pushMessage(owner_id, circle, tagsql, title, summary, content, date = datetime.datetime.today()):
     engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=True)
     # create a Session
     Session = sessionmaker(bind=engine)
     session = Session()
+
+    #create message
+    status = -1
+    message = db.Message(title, summary, status, date)
+    messageitem = db.MessageItem(content)
+    message.item = messageitem
+    session.add(message)
+    session.add(messageitem)
+    
     #find users by circle
-    circle = session.query(db.Circle).filter(db.Circle.id == int(circle)).first()
+    circle = session.query(db.Circle).filter(db.Circle.id == circle).first()
     users = circle.users
+    print 'users', len(users)
+    print len(users)
     #filter users
     tem = []
-    keywords = [word.strip() for word in filter_sql.split('AND')]
+    keywords = [word.strip() for word in tagsql.split('AND')]
     for user in users:
         tags = [tag.name for tag in user.tags]
+        #print 'tags:', tags
+        #print 'keyword', keywords
         flag = True
+        #print 'in?', keywords[0] in keywords
         for word in keywords:
             if not word: continue
             flag = flag and (word in tags)
         if flag:
             tem.append(user)
-    users = tem 
-    status = -1
-    message = db.Message(title, summary, status, date)
-    messageitem = db.MessageItem(content)
-    message.item = messageitem
-    #ownership
-    user = session.query(db.User).filter(db.User.id == owner_id).first()
-    user.ownmessages.append(message)
-    session.add(message)
-    session.add(messageitem)
+    print '-' * 50
+    print 'filterUsers in pushMessage:', users
+    #pack res
     #push to certain users
-    for user in users:
+    for user in tem:
         print 'push to users:', user.name
         user.messages.append(message)
         session.add(user)
     session.commit()
+    #ownership
+    user = session.query(db.User).filter(db.User.id == owner_id).first()
+    user.messages.append(message)
+    user.ownmessages.append(message)
+    session.add(user)
+    session.commit()
+
         
+
 
 #----------- follow ------------------------
 def follow(userid, messageid):
@@ -174,6 +189,7 @@ def getFollowers(session ,messageid):
         res.append({
             'id': f.id,
             'name': f.name, 
+            'logo_url': "static/images/user.jpg",
         })
     return res
 
@@ -221,6 +237,7 @@ def filterUsers(circle_id, tagsql):
     # create a Session
     Session = sessionmaker(bind=engine)
     session = Session()
+
     #find users by circle
     circle = session.query(db.Circle).filter(db.Circle.id == circle_id).first()
     users = circle.users

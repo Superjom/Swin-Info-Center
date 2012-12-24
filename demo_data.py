@@ -113,7 +113,7 @@ def create_tags():
 
 def create_user():
     user = db.User("superjom", "511541", "superjom@gmail.com", \
-                        "Shenzhen,Guang dong", "Peking University")
+                        "Shenzhen,Guang dong", "Peking University", 1, "static/images/user.jpg")
     user1 = db.User("shasha", "511541", "shasha@gmail.com", \
                         "Beijin", u"北理工")
     #加入一些社团
@@ -147,6 +147,9 @@ def show_users():
         print "tags"
         for tag in user.tags:
             print tag.name
+        print 'messages:'
+        for message in user.messages:
+            print message.title
     
 def add_messages():
     print 'add messages'
@@ -256,6 +259,6 @@ if __name__ == "__main__":
     addStations()
     showStations()
     showNews()
-    show_users()
     show_message()
+    show_users()
     

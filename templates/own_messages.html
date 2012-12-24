@@ -29,6 +29,11 @@ span.subtitle{
 span.date{
     color:#999;
 }
+table.message{
+    width:100%;
+    border-bottom:1px solid #eee;
+    margin-bottom:10px;
+}
 </style>
 <div id="content" class="box">
 		<div id="barleft">
@@ -65,15 +70,16 @@ $for message in messages:
         <span class="title"><a href="#" class="title" tobox="$message['id']" style="font-family:'微软雅黑'; ">$message['title'] </a></span>
         <span class="date">Date:$message['date']</span>
         <span class="from">研究生院</span>
-		<div id="box_$message['id']" class="message-content" style="font-size:20px;">
-        $for f in message['followers']:
-            <p><a href='#'>$f['name']</a><p>
+        <div id="box_$message['id']" class="message-content" style="font-size:20px;">
+        <span style="font-size:25px; color:#333;">Followers:</span>
+            $for f in message['followers']:
+                <div><img style="width:60px;" src="$f['logo_url']"/><br/> <a href='#'>$f['name']</a><div>
         </div>
         
     </td>
     </tr>
     </table>
-		</div><!-- baright -->
+</div><!-- baright -->
 </div><!-- end content -->
 
 

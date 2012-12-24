@@ -87,6 +87,11 @@ $for message in messages:
 <div id="dialog-message" title="Filter Tags">
     <div>
 
+<style>
+#tags input{
+    font-size: 20px;
+}
+</style>
 <select name='circle'>
 $for c in circles:
     <option value='$c["id"]'>$c['name']</option>
@@ -163,7 +168,7 @@ jQuery(function(){
         }
     });
 
-    jQuery("button.follow").button().click(function(){
+    jQuery("button.follow").button().live("click", function(){
         var _to = jQuery(this).attr('to');        
         
         jQuery.get('ajax/follow',{to:_to},
@@ -301,16 +306,17 @@ function updateMessage(){
             jQuery("#tabs-2").prepend(_content);
             //start to show
             var _ms = jQuery("#tabs-2 table.hidden");
+            jQuery("#tabs-2 table.hidden button").button();
             _ms.each(function(){
                 var _this = jQuery(this);
                 _this.fadeIn(2000);
-                _this.removeClass(2000);
+                _this.removeClass("hidden");
             });
         }
     });
 }
 
-setInterval("updateMessage()", 5000);
+setInterval("updateMessage()", 10000);
 
 
 
