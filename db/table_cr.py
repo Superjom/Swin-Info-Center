@@ -116,24 +116,25 @@ class User(Base):
 
 # ----------------- tags -------------------
 class TagKind(Base):
-    __tablename__ = 'tagkind'
+    __tablename__ = "tagkind"
     id = Column(Integer, primary_key=True)
     name = Column(String(15))
     tags = relationship("Tag", backref="tagkind")
-    def __init__(self,name):
+    def __init__(self, name):
         self.name = name
 
 class Tag(Base):
     __tablename__ = "tag"
     id = Column(Integer, primary_key=True)
     name = Column(String(15))
+    tagkind_id = Column(Integer, ForeignKey("tagkind.id"))
 
     def __init__(self, name):
         self.name = name
 
 # ----------------- circles ---------------
 class CircleKind(Base):
-    __tablename__ = 'circlekind'
+    __tablename__ = "circlekind"
     id = Column(Integer, primary_key=True)
     name = Column(String(15))
     circles = relationship("Circle", backref="circlekind")
@@ -146,6 +147,7 @@ class Circle(Base):
     name = Column(String)
     logo_url = Column(String)
     des = Column(String)
+    circlekind_id = Column(Integer, ForeignKey("circlekind.id"))
 
     def __init__(self, name, logo_url, des):
         self.name = name
@@ -157,7 +159,7 @@ class MessageMeta(Base):
     '''
     meta status information for each data
     '''
-    __tablename__ = 'messagemeta'
+    __tablename__ = "messagemeta"
     id = Column(Integer, primary_key=True)
     status = Column(Integer)
     #user.messages:     user to message: one to many
@@ -208,10 +210,12 @@ class Follower(Base):
     name = Column(String)
     date = Column(Date)
     message_id = Column(Integer, ForeignKey("message.id"))
+    #logo_url = Column(String)
     
-    def __init__(self, name, date):
+    def __init__(self, name, date, logo_url=''):
         self.name = name
         self.date = date
+        #self.logo_url = logo_url
 
 class Reply(Base):
     __tablename__ = "reply"

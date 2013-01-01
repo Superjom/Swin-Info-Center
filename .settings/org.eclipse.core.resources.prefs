@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
 encoding//db/add_data.py=utf-8
-encoding//db/ctrl.py=utf-8
+encoding//db/table_cr.py=utf-8
 encoding/code.py=utf-8
 encoding/demo_data.py=utf-8

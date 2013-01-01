@@ -115,7 +115,7 @@ def create_user():
     user = db.User("superjom", "511541", "superjom@gmail.com", \
                         "Shenzhen,Guang dong", "Peking University", 1, "static/images/user.jpg")
     user1 = db.User("shasha", "511541", "shasha@gmail.com", \
-                        "Beijin", u"北理工")
+                        "Beijin", u"北理工", 1, "static/images/shasha.jpg")
     #加入一些社团
     circles = session.query(db.Circle).filter(
                         or_(db.Circle.name == u"信息与技术协会", db.Circle.name == u"青年志愿者协会"))
@@ -140,6 +140,7 @@ def show_users():
     for user in users:
         print '-'*50
         print user.name, user.email
+        print user.logo_url
         circles = user.circles
         print "circles: ",
         for c in circles:

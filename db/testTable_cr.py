@@ -12,28 +12,38 @@ def deco(func):
 class TestDatabase:
     
     def getSession(self): 
-        engine = create_engine('sqlite:////home/chunwei/swin2/db/data.db', echo=False)
+        engine = create_engine('sqlite:////home/chunwei/swin2/db/database.db', echo=False)
         # create a Session
         Session = sessionmaker(bind=engine)
         session = Session()  
         return session
     @deco
     def testAddUser(self):
+        print '>> add user'
         user = db.User(
             "superjom",
             "511541",
+            "superjom@gmail.com",
             "Shenzhen, Guangdong",
             "PKU",
-            1,
+            1.0,
             "./logo_url",
         )  
         session = self.getSession()
+        print 'get users'
+        users = session.query(db.User)
+        print [u.name for u in users]
         session.add(user)
         session.commit()
+
+
     @deco
     def testAddTagKind(self):
-        circlekind = db.TagKind("Sex")
-        self.commit(circlekind)
+        print '>> add tagkind'
+        kind = db.TagKind("Sex")
+        session = self.getSession()
+        session.add(kind)
+        session.commit()
     @deco
     def testAddTag(self):
         tag = db.Tag('Male')
@@ -55,7 +65,11 @@ class TestDatabase:
         self.commit(circle)
     @deco
     def testAddCircle(self):
-        circle = db.Circle("circle1")
+        circle = db.Circle(
+            "circle1",
+            "./circle/logo",
+            "the des",
+        )
         self.commit(circle)
     @deco
     def testCircleKindAppendCircle(self):
@@ -95,11 +109,52 @@ class TestDatabase:
         session.add_all([message, messagemeta])  
         print 'commit'
         session.commit()
+
+    @deco
+    def testAddFollower(self):
+        print 'search message'
+        session = self.getSession()
+        m = session.query(db.Message).first()
+        print 'create follower'
+        f = db.Follower('superjom', dt.datetime.today())
+        m.followers.append(f)
+        session.add_all([f, m])
+        session.commit()
     
+    @deco
+    def testAddReply(self):
+        print 'add reply'
+        session = self.getSession()
+        r = db.Reply(dt.datetime.today(), 0, 'replyto <>')
+        item = db.ReplyItem('reply content')
+        session.add_all([r, item])
+        session.commit()
+    
+    @deco
+    def testCircleAddUser(self):
+        print '.. search circle'
+        session = self.getSession()
+        c = session.query(db.Circle).first()
+        u = session.query(db.User).first()
+        c.users.append(u)
+        session.add_all([c,u])
+        session.commit()
+
+    @deco
+    def testUserAddTag(self):
+        print '.. search tag'
+        session = self.getSession()
+        c = session.query(db.Tag).first()
+        u = session.query(db.User).first()
+        c.users.append(u)
+        session.add_all([c,u])
+        session.commit()
+        
+
     def commit(self, ob):
         session = self.getSession()
         session.add(ob)
-        session.commit(ob)
+        session.commit()
     
 if __name__ == '__main__':
     testbase = TestDatabase()
@@ -112,5 +167,9 @@ if __name__ == '__main__':
     t.testCircleKindAppendCircle()
     t.testAddMessage()
     t.testPushMessage()
+    t.testAddFollower()
+    t.testAddReply()
+    t.testCircleAddUser()
+    t.testUserAddTag()
     
     
