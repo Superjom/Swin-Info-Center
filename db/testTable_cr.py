@@ -27,7 +27,7 @@ class TestDatabase:
             "Shenzhen, Guangdong",
             "PKU",
             1.0,
-            "./logo_url",
+            "static/images/male.jpg",
         )  
         session = self.getSession()
         print 'get users'
@@ -149,6 +149,29 @@ class TestDatabase:
         c.users.append(u)
         session.add_all([c,u])
         session.commit()
+
+    @deco
+    def testAddStation(self):
+        print 'add station'
+        session = self.getSession()
+        station = db.Station('school')
+        session.add(station)
+        session.commit()
+
+
+    @deco
+    def testAddNews(self):
+        print 'add news'
+        session = self.getSession()
+        station = session.query(db.Station).first()
+        u = session.query(db.User).first()
+        for i in range(2):
+            news = db.News('the title %d' % i, dt.datetime.today())
+            station.news.append(news)
+            session.add(news)
+        u.stations.append(station)
+        session.add_all([station, u])
+        session.commit()
         
 
     def commit(self, ob):
@@ -171,5 +194,7 @@ if __name__ == '__main__':
     t.testAddReply()
     t.testCircleAddUser()
     t.testUserAddTag()
+    t.testAddStation()
+    t.testAddNews()
     
     

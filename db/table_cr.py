@@ -102,6 +102,8 @@ class User(Base):
             secondary = user_station_association,
             backref = "users"
     )
+    # one to many: news
+    news = relationship("News")
     # one to many: replys
     replys = relationship("Reply")
 
@@ -261,25 +263,27 @@ class News(Base):
     __tablename__ = "news"
     id = Column(Integer, primary_key=True)
     date = Column(Date)
+    title = Column(String)
     
     #Station  to News
     station_id = Column(Integer, ForeignKey("station.id"))
+    #many to one user
+    user_id = Column(Integer, ForeignKey('user.id'))
     #news.item  news to Item: one to one
     item = relationship("NewsItem", uselist=False)
 
-    def __init__(self, date):
+    def __init__(self, title, date):
         self.date = date
+        self.title = title
 
 class NewsItem(Base):
     __tablename__ = 'newsitem'
     id = Column(Integer, primary_key=True)
-    title = Column(String)
     #summary = Column(String)
     content = Column(String)
     news_id = Column(Integer, ForeignKey('news.id'))
 
-    def __init__(self, title, content):
-        self.title = title
+    def __init__(self, content):
         self.content = content
 
 # create tables
