@@ -16,34 +16,40 @@ def transP(text):
 
 
 class User(Ctrl):
-    def __init__(self, session):
+    def __init__(self):
         '''
         joint session
         '''
+        session = getSession()
         Ctrl.__init__(self, session, db.User)
 
     def addTag(self, id, tag):
         #user = self.session.query(db.User).filter(db.User.id == id).first()
+        self.session = getSession()
         self.setCur(id)
         self.cur.tags.append(tag)
         self.commit_all([self.cur, tag])
 
     def addCircle(self, id, circle):
+        self.session = getSession()
         self.setCur(id)
         self.cur.circles.append(circle)
         self.commit_all(self.cur, circle)
 
     def login(self, name, pwd):
-        user = self.get_byName(name)
+        self.session = getSession()
+        session = getSession()
+        user = self.get_byName(session, name)
         if user:
-            print '*' * 50
             print '>> login get user: ', user.name, user.pwd
             if user.pwd == pwd:
                 return user.id
         return -1
 
     def getInfo(self, id):
-        user = self.get(id)
+        #user = self.get(id)
+        session = getSession()
+        user = session.query(db.User).filter(db.User.id == id).first()
         res = {
             'name': user.name,
             'pwd': user.pwd,
@@ -59,6 +65,7 @@ class User(Ctrl):
         '''
         取得其收录的新闻站点
         '''
+        self.session = getSession()
         user = self.get(id)
         return user.stations
         
@@ -67,6 +74,7 @@ class User(Ctrl):
         '''
         取得 id 的 user 的所有message
         '''
+        self.session = getSession()
         user = self.get(id)
         messages = user.messages
         res = []
@@ -85,6 +93,7 @@ class User(Ctrl):
         return res
 
     def getAllNewsList(self, id, page=-1):
+        self.session = getSession()
         news_page_num = 7
         res = []
         user = self.get(id)
@@ -103,6 +112,7 @@ class User(Ctrl):
         return res
     
     def getCircles(self, id):
+        self.session = getSession()
         user = self.get(id)
         circles = user.circles
         res = []
@@ -114,7 +124,8 @@ class User(Ctrl):
             )
         return res   
     
-    def getTags(self, id):    
+    def getTags(self, id):  
+        self.session = getSession()  
         user = self.get(id)
         tags = user.tags
         res = []

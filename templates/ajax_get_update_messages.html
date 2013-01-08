@@ -1,4 +1,4 @@
-$def with(messages)
+$def with(messages, replys)
 
 $for message in messages:
     <table class="message hidden" style="display:none;">
@@ -14,8 +14,30 @@ $for message in messages:
         <span class="subtitle">$message['summary']</span>
         <span class="date">Date:$message['date']</span>
         <span class="from">研究生院</span>
-		<div id="box_$message['id']" class="message-content">$:message['content']</div>
+		<div id="box_$message['id']" class="message-content">$:message['content']
+        
+            <form class="reply">
+                <textarea name="reply" id="reply_$message['id']"></textarea>
+                <button type='button' class="reply_bn" linkto="$message['id']">reply</button>
+            </form><!-- textarea -->
+        </div>
     </td>
     </tr>
     </table>
 
+$for reply in replys:
+    <table class="message hidden" style="display:none;">
+    <tr>
+    <td valign="top"> 
+        <a href="#" class="upper"></a>
+        <a href="#" class="downer"></a>
+    </td>
+
+    <td>
+        <span class="subtitle">$reply['replyto']</span>
+        <span class="date">Date:$reply['date']</span>
+        <span class="from">研究生院</span>
+		<div id="box_$reply['id']" class="message-content">$:reply['content']</div>
+    </td>
+    </tr>
+    </table>

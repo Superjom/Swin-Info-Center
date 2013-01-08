@@ -168,7 +168,7 @@ class MessageMeta(Base):
     user_id = Column(Integer, ForeignKey("user.id"))
     # one to one
     message = relationship("Message", uselist=False)
-    def __init__(self, message, status=0):
+    def __init__(self, message, status=-1):
         self.status = status
         self.message = message
 

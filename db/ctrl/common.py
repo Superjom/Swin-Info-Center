@@ -1,3 +1,6 @@
+import sys
+sys.path.append('..')
+#import table_cr as db
 from sqlalchemy import  create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -36,8 +39,8 @@ class Ctrl:
     def get(self, id):
         return self.session.query(self.ob).filter(self.ob.id == id).first()
 
-    def get_byName(self, name):
-        return self.session.query(self.ob).filter(self.ob.name == name).first()
+    def get_byName(self, session, name):
+        return session.query(self.ob).filter(self.ob.name == name).first()
 
     def setCur(self, id):
         '''

@@ -1,10 +1,20 @@
-$def with(userinfo, message_count, messages, news, circles, tags)
+$def with(userinfo, message_count, messages, news, circles)
 
 <link rel="stylesheet" href="static/style/style.css" />
 <script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.mouse.js"></script>
 <script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.draggable.js"></script>
 <script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.position.js"></script>
 <script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.dialog.js"></script>
+<style>
+.reply-content{
+    width:80%;
+    border:1px solid #eee;
+    clear:both;
+}
+table.message{
+    width:100%;
+}
+</style>
 <div id="content" class="box">
 		<div id="barleft">
 			<img id="user_img" src="$userinfo['logo_url']" />
@@ -58,11 +68,10 @@ $for new in news:
 
 <div id="tabs-2" class="tab_box" style="padding:0;">
 			
-
 $for message in messages:
-    <table class="message">
+    <table class="message message_$message['id']">
     <tr>
-    <td valign="top"> 
+    <td valign="top" style="width:80px;"> 
         <a href="#" class="upper"></a>
         <a href="#" class="downer"></a>
     </td>
@@ -70,10 +79,17 @@ $for message in messages:
     <td>
         <span class="title"><a href="#" class="title" tobox="$message['id']" style="font-family:'微软雅黑'; ">$message['title'] </a></span>
         <button class="follow" type="button" to="$message['id']">Follow</button>
-        <span class="subtitle">$message['summary']</span>
+        <span class="subtitle replyto">$message['summary']</span>
         <span class="date">Date:$message['date']</span>
         <span class="from">研究生院</span>
-		<div id="box_$message['id']" class="message-content">$:message['content']</div>
+		<div id="box_$message['id']" class="message-content">
+            $:message['content']
+            <form class="reply">
+                <textarea name="reply" id="reply_$message['id']" class="reply-content"></textarea>
+                <br/>
+                <button type='button' class="reply_bn" linkto="$message['id']">reply</button>
+            </form><!-- textarea -->
+        </div>
     </td>
     </tr>
     </table>
@@ -97,27 +113,13 @@ $for c in circles:
     <option value='$c["id"]'>$c['name']</option>
 </select>
     </div>
-    <table id="tags">
-$for t in tags:
-        <tr>
-            <td class="yn">
-                <!--
-                <input name='tag$t["id"]' type="radio" id="1check$loop.index"  value=' OR $t["name"]'/><label for="1check$loop.index">OR</label>
-                -->
-                <input value=' AND $t["name"]' type="checkbox" id="2check$loop.index" /><label for="2check$loop.index">$t['name']</label>
-                <!-- 
-                <input name='tag$t["id"]' value=' NOT $t["name"]' type="radio" id="3check$loop.index" /><label for="3check$loop.index">NOT</label>
-                -->
-            </td>
-        </tr>
-</table>
 </div>
 <!-- dialog -------------------------------------->
 
                     <table>
 						<tr>
 							<td valign="top"><button id="filter_bn" type="button">Filter</button></td>
-							<td><input id='filter_input' name='filter_input' type="text" /></td>
+							<td></td>
 						</tr>
                         <tr>
                             <td valign="top">Title</td>
@@ -148,7 +150,15 @@ $for t in tags:
 
 <div id="push-message" title="推送对象">
     <p>您的信息已经推送给：</p>
+    <div class='box'></div>
 </div><!-- end dialog-message -->
+
+
+<div id="reply-message" title="回复成功" style="width:200px; overflow:hidden;">
+    <p>您的信息已经成功回复给：</p>
+    <div class='box'></div>
+</div><!-- end dialog-message -->
+
 
 <div id="follow-message" title="Succeed follow">
     <p>Succeed follow!</p>
@@ -167,6 +177,18 @@ jQuery(function(){
             }
         }
     });
+
+    jQuery( "#reply-message" ).dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            Ok: function() {
+                //ok
+                jQuery( this ).dialog( "close" );
+            }
+        }
+    });
+
 
     jQuery("button.follow").button().live("click", function(){
         var _to = jQuery(this).attr('to');        
@@ -249,15 +271,6 @@ jQuery(function(){
         return false;
     });
 
-
-
-
-
-
-
-
-
-
 });
 
 //filter_input
@@ -284,7 +297,7 @@ jQuery("button#push").click(function(){
             //method
             //alert(data);
             var _userlist = jQuery(data);
-            jQuery("#push-message").append(_userlist);
+            jQuery("#push-message .box").html(_userlist);
             //show dialog
             jQuery("#push-message").dialog("open");
         }
@@ -292,11 +305,37 @@ jQuery("button#push").click(function(){
     return false;
 });
 
+//submit reply
+jQuery("button.reply_bn").button().live('click', function(){
+    var _this = jQuery(this);
+    var message_id = _this.attr("linkto");
+    var content = jQuery("#reply_" + message_id).val();
+    var replyto = jQuery(".message_" + message_id + " .subtitle").text();
+    // post to add reply
+    //alert(content);
+    jQuery.ajax({
+        type: "POST",
+        url: "/ajax/reply",
+        data:{
+            messageid: message_id,
+            replyto: replyto,
+            content: content
+        },
+        success: function(data)
+        {
+            var _this = jQuery("#reply-message");
+            jQuery("#reply-message .box").html(data);
+            _this.dialog("open");
+        }
+    });//end jQuery post
+    
+});
+
 //动态刷新message
 function updateMessage(){
     jQuery.ajax({
-        type: "POST",
-        url: "/ajax/get_update_messages",
+        type: "GET",
+        url: "/ajax/get_new_items",
         data:{user_id: 1},
         success: function(data)
         {
@@ -312,6 +351,7 @@ function updateMessage(){
                 _this.fadeIn(2000);
                 _this.removeClass("hidden");
             });
+            // movement
         }
     });
 }
