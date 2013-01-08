@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*
 import web
 web.config.debug = False
-
+from datetime import datetime  as dt
 import db.table_cr as table
 import db.ctrl.user as user
 import db.ctrl.tag as tag
 import db.ctrl.circle as circle
+import db.ctrl.message as message
 from db.ctrl.common import getSession
 
 urls = (    
@@ -13,12 +14,18 @@ urls = (
     "/", "index",
     "/signin", "signin",
     "/_signin(.*)", "_signin",
+    "/ajax/push_message(.*)", "ajax_push_message",
 )
 
 app = web.application(urls, globals())
 session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'userid': -1})
 
-userctrl = user.User(getSession())
+#--------------- db ctroler--------------------
+_session = getSession()
+userctrl = user.User(_session)
+circlectrl = circle.Circle(_session)
+messagectrl = message.Message(_session)
+
 
 class index:
     def GET(self):
@@ -61,8 +68,32 @@ class userindex:
         messages = userctrl.getMessages(session.userid)
         news = userctrl.getAllNewsList(session.userid)
         circles = userctrl.getCircles(session.userid)
-        tags = userctrl.getTags(session.userid)
+        #tags = userctrl.getTags(session.userid)
         return render.user_index(userinfo, len(messages), messages, news, circles, tags)
+
+
+class ajax_push_message:
+    def POST(self, data):
+        data = web.input()
+        print '@' * 50
+        print data
+        circle = 1
+        '''
+        filter_input = data['filter_input']
+        title = data['title']
+        summary = data['summary']
+        content = data['content']
+        '''
+        #user = ctrl.filterUsers(circle, filter_input)
+        users = circlectrl.getUserNames(circle)
+        #wraper users
+        print 'get ursers', user
+        #create message
+        message = data
+        #push message
+        messagectrl.push(circle, message)
+        render = web.template.frender("templates/ajax_push_message.html")
+        return render(users)
 
 
 if __name__ == "__main__":

@@ -68,7 +68,7 @@ class User(Base):
     university = Column(String(25))
     score = Column(Float)
     logo_url = Column(String)
-
+    
     # more to more:  user to tag
     tags = relationship("Tag",
             secondary = user_tag_association,
@@ -181,7 +181,8 @@ class Message(Base):
     date = Column(Date)
     summary = Column(String)
     # who create it
-    creator = Column(String)
+    #creator = Column(String)
+    creator_id = Column(Integer)
     #messagemeta
     messagemeta_id = Column(Integer, ForeignKey("messagemeta.id"))
     #message.item   one to one
@@ -189,11 +190,10 @@ class Message(Base):
     #follower
     followers = relationship("Follower")
 
-    def __init__(self, title, summary, creator, status, date):
+    def __init__(self, title, summary, status, date):
         self.title = title
         self.summary = summary
         self.status = status
-        self.creator = creator
         self.date = date
         
 class MessageItem(Base):

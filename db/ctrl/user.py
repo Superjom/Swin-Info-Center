@@ -8,9 +8,10 @@ from common import Ctrl, getSession
 
 def transP(text):
     res = ''
-    for l in text.split('\n'):
-        l = '<p>' + l + '</p>'
-        res += l
+    if text:
+        for l in text.split('\n'):
+            l = '<p>' + l + '</p>'
+            res += l
     return res
 
 
@@ -70,13 +71,14 @@ class User(Ctrl):
         messages = user.messages
         res = []
         for m in messages:
+            message = m.message
             res.append(
                 {
-                 'id':m.id,
-                 'title': m.title,
-                 'date': m.date,
-                 'summary': m.summary,
-                 'content': transP(m.item.content),
+                 'id':message.id,
+                 'title': message.title,
+                 'date': message.date,
+                 'summary': message.summary,
+                 'content': transP(message.item.content),
                  }
             )
         res.reverse()
@@ -136,7 +138,12 @@ if __name__ == '__main__':
         1.0,
         "./"
     )
-    u.add(user)
+    #u.add(user)
     u.show_all()
-    print u.get(1)
+    us =  u.get(1)
+    circles = us.circles
+    print 'circles'
+    for c in circles:
+        print c.name, c.id
+
 

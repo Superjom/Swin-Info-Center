@@ -10,7 +10,7 @@ class CircleKind(Ctrl):
         '''
         joint session
         '''
-        Ctrl.__init__(session, db.CircleKind)
+        Ctrl.__init__(self, session, db.CircleKind)
 
     def add(self, circle):
         self.commit(circle)
@@ -27,7 +27,7 @@ class Circle(Ctrl):
         '''
         joint session
         '''
-        Ctrl.__init__(session, db.Circle)
+        Ctrl.__init__(self, session, db.Circle)
 
     def add(self, circle):
         self.commit(circle)
@@ -36,4 +36,14 @@ class Circle(Ctrl):
         self.setCur(id)
         self.cur.users.append(user)
         self.commit_all([self.cur, user])
+
+    def getUserNames(self, circleid):
+        self.setCur(circleid)
+        res = []
+        for u in self.cur.users:
+            res.append({
+                        'name': u.name,
+                        'logo_url':u.logo_url,
+                        })
+        return res
 

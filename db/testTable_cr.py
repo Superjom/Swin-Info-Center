@@ -27,7 +27,7 @@ class TestDatabase:
             "Shenzhen, Guangdong",
             "PKU",
             1.0,
-            "static/images/male.jpg",
+            "static/images/logo_male.jpg",
         )  
         session = self.getSession()
         print 'get users'
@@ -81,14 +81,14 @@ class TestDatabase:
         session.add(circle)
         session.add(circlekind)
         session.commit()
+
     @deco
     def testAddMessage(self):
         print 'create message'
         message = db.Message(
             "the title",
             "the summary",
-            "the creator",
-            0,
+            1,
             dt.datetime.today()
         )
         print 'create messageitem'
@@ -196,5 +196,4 @@ if __name__ == '__main__':
     t.testUserAddTag()
     t.testAddStation()
     t.testAddNews()
-    
     

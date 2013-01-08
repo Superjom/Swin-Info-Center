@@ -44,7 +44,7 @@ class Ctrl:
         pass in id
         and get first object
         '''
-        self.cur = self.session.query(ob).filter(ob.id == id).first()
+        self.cur = self.session.query(self.ob).filter(self.ob.id == id).first()
 
     def show_all(self):
         print '.. show all ', self.ob
