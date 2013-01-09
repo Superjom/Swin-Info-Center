@@ -2,6 +2,7 @@
 import web
 web.config.debug = False
 from datetime import datetime  as dt
+import types
 import db.table_cr as table
 import db.ctrl.user as user
 import db.ctrl.tag as tag
@@ -27,6 +28,16 @@ urls = (
     "/ajax/follow(.*)", "ajax_follow",
     #查看 followers
     "/own_messages", "own_messages",
+    "/ajax/load_more_news(.*)", "ajax_load_more_news",
+    "/sigle(.*)", "sigle",
+    "/items(.*)", "items",
+    # show circles
+    "/circles", "circles",
+    #profile
+    "/profile", "user_profile",
+    "/profile_edit", "profile_edit",
+    "/profile_join_circles", "profile_join_circles", 
+    "/profile_select_news", "profile_select_news",
 )
 
 app = web.application(urls, globals())
@@ -81,10 +92,11 @@ class userindex:
         userinfo = userctrl.getInfo(session.userid)
         
         messages = userctrl.getMessages(session.userid)
+        replys = userctrl.getReplys(session.userid)
         news = userctrl.getAllNewsList(session.userid)
         circles = userctrl.getCircles(session.userid)
         #tags = userctrl.getTags(session.userid)
-        return render.user_index(userinfo, len(messages), messages, news, circles)
+        return render.user_index(userinfo, len(messages), messages, news, circles, replys)
 
 
 class ajax_push_message:
@@ -102,12 +114,38 @@ class ajax_push_message:
         #user = ctrl.filterUsers(circle, filter_input)
         users = circlectrl.getUserNames(circle)
         #wraper users
-        print 'get ursers', user
+        print 'get ursers', users
         #create message
-        message = data
-        message['ownerid'] = session.userid
+        message_dic = data
+        message_dic['ownerid'] = session.userid
+        #push messages
+        '''
+        _session = getSession()
+        _users = _session.query(table.Circle).filter(table.Circle.id == circle).first().users
+        print 'get users: ', _users
+        #=---- add new message
+        _message = table.Message(
+            message_dic['title'],
+            message_dic['summary'],
+            -1,
+            dt.today(),
+        )
+        _message.creator_id = message_dic['ownerid']
+        item = table.MessageItem(message_dic['content'])
+        _message.item = item
+        _session.add(_message)
+        _session.add(item)
+        for u in _users:
+            #create meat
+            meta = table.MessageMeta(_message, -1)
+            u.messages.append(meta)
+            _session.add(u)
+            _session.add(meta)
+        _session.commit()
+        '''
+
         #push message
-        messagectrl.push(circle, message)
+        messagectrl.push(circle, message_dic)
         render = web.template.frender("templates/ajax_push_message.html")
         return render(users)
 
@@ -118,7 +156,7 @@ class ajax_reply:
         print data
         _session = getSession()
         #add reply
-        reply = table.Reply(dt.today(), -1, data['replyto'])
+        reply = table.Reply(dt.today(), -1, data['replyto'], session.userid)
         item = table.ReplyItem(data['content'])
         reply.item = item
         #get user
@@ -146,21 +184,26 @@ class ajax_get_new_items:
         for m in metas:
             #change status
             #...
-            print m.status
             if m.status != -1:
                 '''
                 只取得status为-1的记录
                 '''
                 continue
-            message = m.message
-            item = message.item
-            res1.append({
-                'id':message.id,
-                'title': message.title,
-                'summary': message.summary,
-                'date': message.date,
-                'content': item.content
-            })
+            try:
+                m.status = 0
+                _session.add(m)
+                message = m.message
+                item = message.item
+                res1.append({
+                    'id':message.id,
+                    'title': message.title,
+                    'summary': message.summary,
+                    'date': message.date,
+                    'content': item.content
+                })
+            except:
+                print 'wrong get new items'
+                pass
         #get new reply items
         #-----------------------------------
         res2 = []
@@ -169,6 +212,8 @@ class ajax_get_new_items:
             print r.replyto
             if r.status != -1:
                 continue
+            r.status = 0
+            _session.add(r)
             item = r.item
             try:
                 res2.append({
@@ -180,8 +225,7 @@ class ajax_get_new_items:
             except:
                 print 'none reply'
         render = web.template.frender("templates/ajax_get_update_messages.html")
-        print 'res1: res2:'
-        print res1, res2
+        _session.commit()
         return render(res1, res2)
 
 class ajax_follow:
@@ -239,6 +283,140 @@ class own_messages:
         print res
         render = web.template.render("templates/", base="template")
         return render.own_messages(userinfo, res)
+
+class ajax_load_more_news:
+    def GET(self, data):
+        data = web.input()
+        #page = int(data['page'])
+        news = userctrl.getAllNewsList(session.userid, -1)
+        print '@'*50
+        print 'get news page:', news
+        render = web.template.frender("templates/ajax_load_more_news.html")
+        print news
+        return render(news)
+
+def getNewsById(id):
+    '''
+    get news content:
+    title
+    date
+    content
+    station
+    '''
+    session = getSession()
+    news = session.query(table.News).filter(table.News.id == id).first()
+    res = {}
+    res['title'] = news.title
+    res['content'] = news.item.content
+    res['date'] = news.date
+    res['station'] = news.station.name
+    return res
+
+
+def getStations():
+    '''
+    get stations:
+    id
+    name
+    '''
+    session = getSession()
+    stations = session.query(table.Station)
+    res = []
+    for s in stations:
+        res.append(
+            {'name': s.name,
+            'id':s.id,
+            'num':len(s.news),
+            }
+        )
+    return res
+
+
+class sigle:
+    def GET(self, data):
+        render = web.template.render("templates/", base="template")
+        data = web.input()
+        news = getNewsById(data['id'])
+        stations = getStations()
+        print '@' * 50
+        print 'news:', news['title']
+        print 'stations:', stations
+        return render.sigle(news, stations)    
+
+
+def getNews(station):
+    '''
+    get staton's all news
+    station is id or string name
+
+    title
+    date
+    '''
+    session = getSession()
+    res = {}
+    if type(station) is types.IntType:
+        '''
+        get id
+        '''
+        s = session.query(table.Station).filter(table.Station.id == station).first()
+        news = s.news
+        res['station'] = s.name
+    else:
+        res['station'] = station
+        s = session.query(table.Station).filter(table.Station.name == station).first()
+        news = s.news
+    res['news'] = []
+    for n in news:
+        item = n.item
+        res['news'].append(
+            {
+                'id': n.id,
+                'title':n.title,
+                'station': n.station.name,
+                'date':n.date,
+            }
+        )
+    return res
+
+class items:
+    def GET(self, data):
+        data = web.input()
+        station_id = data['station_id']
+        #t = web.template.frender('templates/index.html')
+        render = web.template.render("templates/", base="template")
+        #station_name = ctrl.getStationName(station_id)
+        news = getNews(int(station_id))
+        stations = getStations()
+        station_name = news['station']
+        newslist = news['news']
+        return render.items(station_name, newslist, stations)
+
+class user_profile:
+    def GET(self):
+        #t = web.template.frender('templates/index.html')
+        render = web.template.render("templates/", base="template")
+        return render.user_profile()
+
+class profile_edit:
+    def GET(self):
+        #t = web.template.frender('templates/index.html')
+        render = web.template.render("templates/", base="template")
+        assert session.userid != -1
+        info = userctrl.getInfo(session.userid)
+        return render.profile_edit(info)
+
+
+class profile_join_circles:
+    def GET(self):
+        #t = web.template.frender('templates/index.html')
+        render = web.template.render("templates/", base="template")
+        return render.profile_join_circles()
+    
+class circles:
+    def GET(self):
+        #t = web.template.frender('templates/index.html')
+        render = web.template.render("templates/", base="template")
+        return render.circles()
 
 
 

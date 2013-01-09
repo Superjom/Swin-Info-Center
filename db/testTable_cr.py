@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import random 
 import unittest
 from sqlalchemy import  create_engine
@@ -29,12 +30,32 @@ class TestDatabase:
             1.0,
             "static/images/logo_male.jpg",
         )  
+
+        user1 = db.User(
+            "shasha",
+            "511541",
+            "shasha@gmail.com",
+            "Beijing",
+            "PKU",
+            1.0,
+            "static/images/logo_female.jpg",
+        )  
+
+        user2 = db.User(
+            "chunwei",
+            "511541",
+            "shasha@gmail.com",
+            "Beijing",
+            "PKU",
+            1.0,
+            "static/images/logo_female.jpg",
+        )  
         session = self.getSession()
         print 'get users'
+        session.add_all([user, user1, user2])
+        session.commit()
         users = session.query(db.User)
         print [u.name for u in users]
-        session.add(user)
-        session.commit()
 
 
     @deco
@@ -65,12 +86,24 @@ class TestDatabase:
         self.commit(circle)
     @deco
     def testAddCircle(self):
+        session = self.getSession()
         circle = db.Circle(
-            "circle1",
+            u"教务处",
             "./circle/logo",
             "the des",
         )
-        self.commit(circle)
+        circle1 = db.Circle(
+            u"研究生院",
+            "./circle/logo",
+            "the des",
+        )
+        circle2 = db.Circle(
+            u"信息协会交流群",
+            "./circle/logo",
+            "the des",
+        )
+        session.add_all([circle, circle1, circle2])
+        session.commit()
     @deco
     def testCircleKindAppendCircle(self):
         print '..find circlekind'
@@ -125,7 +158,7 @@ class TestDatabase:
     def testAddReply(self):
         print 'add reply'
         session = self.getSession()
-        r = db.Reply(dt.datetime.today(), 0, 'replyto <>')
+        r = db.Reply(dt.datetime.today(), 0, 'replyto <>', 1)
         item = db.ReplyItem('reply content')
         session.add_all([r, item])
         session.commit()
@@ -134,10 +167,12 @@ class TestDatabase:
     def testCircleAddUser(self):
         print '.. search circle'
         session = self.getSession()
-        c = session.query(db.Circle).first()
-        u = session.query(db.User).first()
-        c.users.append(u)
-        session.add_all([c,u])
+        c = session.query(db.Circle).all()
+        users = session.query(db.User).all()
+        for s in c:
+            for u in users:
+                s.users.append(u)
+                session.add_all([u, s])
         session.commit()
 
     @deco
@@ -149,15 +184,6 @@ class TestDatabase:
         c.users.append(u)
         session.add_all([c,u])
         session.commit()
-
-    @deco
-    def testAddStation(self):
-        print 'add station'
-        session = self.getSession()
-        station = db.Station('school')
-        session.add(station)
-        session.commit()
-
 
     @deco
     def testAddNews(self):
@@ -172,6 +198,18 @@ class TestDatabase:
         u.stations.append(station)
         session.add_all([station, u])
         session.commit()
+
+    def testAddStations(self):
+        session = self.getSession()
+        stations = [
+            u"深圳研究生院官网",
+            u"信息工程学院",
+        ]
+        for station in stations:
+            s = db.Station(station)
+            session.add(s)
+        session.commit()
+        print "add stations OK!"
         
 
     def commit(self, ob):
@@ -181,19 +219,20 @@ class TestDatabase:
     
 if __name__ == '__main__':
     testbase = TestDatabase()
+    t = testbase
     testbase.testAddUser()
     testbase.testAddTagKind()
-    t = testbase
     t.testAddTag()
     t.testAddCircleKind()
     t.testAddCircle()
     t.testCircleKindAppendCircle()
-    t.testAddMessage()
-    t.testPushMessage()
-    t.testAddFollower()
-    t.testAddReply()
+    #t.testAddMessage()
+    #t.testPushMessage()
+    #t.testAddFollower()
+    #t.testAddReply()
     t.testCircleAddUser()
     t.testUserAddTag()
-    t.testAddStation()
-    t.testAddNews()
+ 
+    t.testAddStations()
+    #t.testAddNews()
     

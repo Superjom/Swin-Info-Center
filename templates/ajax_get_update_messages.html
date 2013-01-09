@@ -1,9 +1,9 @@
 $def with(messages, replys)
 
 $for message in messages:
-    <table class="message hidden" style="display:none;">
+    <table class="message message_$message['id']">
     <tr>
-    <td valign="top"> 
+    <td valign="top" style="width:80px;"> 
         <a href="#" class="upper"></a>
         <a href="#" class="downer"></a>
     </td>
@@ -11,13 +11,14 @@ $for message in messages:
     <td>
         <span class="title"><a href="#" class="title" tobox="$message['id']" style="font-family:'微软雅黑'; ">$message['title'] </a></span>
         <button class="follow" type="button" to="$message['id']">Follow</button>
-        <span class="subtitle">$message['summary']</span>
+        <span class="subtitle replyto">$message['summary']</span>
         <span class="date">Date:$message['date']</span>
         <span class="from">研究生院</span>
-		<div id="box_$message['id']" class="message-content">$:message['content']
-        
+		<div id="box_$message['id']" class="message-content">
+            $:message['content']
             <form class="reply">
-                <textarea name="reply" id="reply_$message['id']"></textarea>
+                <textarea name="reply" id="reply_$message['id']" class="reply-content"></textarea>
+                <br/>
                 <button type='button' class="reply_bn" linkto="$message['id']">reply</button>
             </form><!-- textarea -->
         </div>
@@ -26,7 +27,7 @@ $for message in messages:
     </table>
 
 $for reply in replys:
-    <table class="message hidden" style="display:none;">
+    <table class="message reply hidden" style="display:none;">
     <tr>
     <td valign="top"> 
         <a href="#" class="upper"></a>
@@ -35,6 +36,7 @@ $for reply in replys:
 
     <td>
         <span class="subtitle">$reply['replyto']</span>
+        <span class="content">$reply['content']</span>
         <span class="date">Date:$reply['date']</span>
         <span class="from">研究生院</span>
 		<div id="box_$reply['id']" class="message-content">$:reply['content']</div>

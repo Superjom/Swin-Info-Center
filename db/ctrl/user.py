@@ -80,16 +80,43 @@ class User(Ctrl):
         res = []
         for m in messages:
             message = m.message
-            res.append(
-                {
-                 'id':message.id,
-                 'title': message.title,
-                 'date': message.date,
-                 'summary': message.summary,
-                 'content': transP(message.item.content),
-                 }
-            )
+            try:
+                res.append(
+                    {
+                     'id':message.id,
+                     'title': message.title,
+                     'date': message.date,
+                     'summary': message.summary,
+                     'content': transP(message.item.content),
+                     }
+                )
+            except:
+                print 'no message!'
         res.reverse()
+        return res
+
+    def getReplys(self, id):
+        self.session = getSession()
+        res = []
+        user = self.get(id)
+        replys = user.replys
+        for r in replys:
+            owner_id = r.owner_id
+            #get from user
+            from_user = self.get(owner_id)
+            print r.replyto
+            item = r.item
+            try:
+                res.append({
+                    'id':r.id,
+                    'replyto':r.replyto,
+                    'date':r.date,
+                    'content':item.content,
+                    'from_user_name': from_user.name,
+                    'from_user_logo_url': from_user.logo_url,
+                })
+            except:
+                print 'none reply'
         return res
 
     def getAllNewsList(self, id, page=-1):
@@ -101,6 +128,7 @@ class User(Ctrl):
         if page == -1:
             news = user.news
         else:
+            print user.news
             news = user.news[page * news_page_num : (page+1) * news_page_num]
         for n in news:
             res.append({

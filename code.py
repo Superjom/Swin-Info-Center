@@ -217,5 +217,15 @@ class sigle:
         print 'stations:', stations
         return render.sigle(news, stations)    
     
+class ajax_load_more_news:
+    def GET(self, data):
+        data = web.input()
+        page = data['page']
+        news = ctrl.getAllNewsList(1)
+        print '@'*50
+        print 'get news page:', news
+        render = web.template.frender("templates/ajax_load_more_news.html")
+        return render(news)
+
 if __name__ == "__main__":
     app.run()

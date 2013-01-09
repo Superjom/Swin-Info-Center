@@ -3,6 +3,7 @@ encoding//db/Ctrl.py=utf-8
 encoding//db/add_data.py=utf-8
 encoding//db/ctrl/user.py=utf-8
 encoding//db/table_cr.py=utf-8
+encoding//db/testTable_cr.py=utf-8
 encoding/code.py=utf-8
 encoding/demo_data.py=utf-8
 encoding/server.py=utf-8

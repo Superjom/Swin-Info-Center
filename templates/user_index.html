@@ -1,4 +1,4 @@
-$def with(userinfo, message_count, messages, news, circles)
+$def with(userinfo, message_count, messages, news, circles, replys)
 
 <link rel="stylesheet" href="static/style/style.css" />
 <script src="static/js/jquery-ui/development-bundle/ui/jquery.ui.mouse.js"></script>
@@ -93,6 +93,27 @@ $for message in messages:
     </td>
     </tr>
     </table>
+
+$for reply in replys:
+    <table class="message reply" >
+    <tr>
+    <td valign="top"> 
+        <a href="#" class="upper"></a>
+        <a href="#" class="downer"></a>
+    </td>
+
+    <td>
+        <span class="subtitle">$reply['replyto']</span>
+        <span class="date">Date:$reply['date']</span>
+        <span class="from">研究生院</span>
+		<div id="box_$reply['id']" class="content">$:reply['content']</div>
+        <br/>
+         <img style="width:70px;" src='$reply["from_user_logo_url"]'/>
+         <br/>
+         <span class="username">from:$reply["from_user_name"]  </span>
+    </td>
+    </tr>
+    </table>
 <a href="#">Read more</a>
 </div><!-- end tabs-2 -->
 
@@ -100,23 +121,29 @@ $for message in messages:
                 <form id="push_message">
 
 <!-- dialog -------------------------------------->
-<div id="dialog-message" title="Filter Tags">
-    <div>
-
 <style>
 #tags input{
     font-size: 20px;
 }
 </style>
+
+<div id="dialog-message" title="Filter Tags">
+    <div>
+
 <select name='circle'>
 $for c in circles:
     <option value='$c["id"]'>$c['name']</option>
 </select>
     </div>
 </div>
+<style>
+#push_message_table input, #push_message_table textarea{
+    border:1px solid #999; 
+}
+</style>
 <!-- dialog -------------------------------------->
 
-                    <table>
+                    <table id="push_message_table">
 						<tr>
 							<td valign="top"><button id="filter_bn" type="button">Filter</button></td>
 							<td></td>
@@ -148,9 +175,9 @@ $for c in circles:
 </div><!-- end content -->
 
 
-<div id="push-message" title="推送对象">
+<div id="push-message" title="推送对象" style="width:210px;">
     <p>您的信息已经推送给：</p>
-    <div class='box'></div>
+    <div class='box' style="width:200px; overflow:hidden; border:1px solid #fff;"></div>
 </div><!-- end dialog-message -->
 
 
@@ -205,7 +232,7 @@ jQuery(function(){
 	jQuery("#tags").buttonset();
 
     // ajax 传回message内容
-    jQuery("table.message a.title").click(function(){
+    jQuery("table.message a.title").live("click", function(){
         var _this = jQuery(this);
         var id = _this.attr("tobox");
         var _content = jQuery("#box_" + id);
@@ -311,6 +338,7 @@ jQuery("button.reply_bn").button().live('click', function(){
     var message_id = _this.attr("linkto");
     var content = jQuery("#reply_" + message_id).val();
     var replyto = jQuery(".message_" + message_id + " .subtitle").text();
+    //alert('replyto: ' + replyto);
     // post to add reply
     //alert(content);
     jQuery.ajax({
@@ -342,21 +370,23 @@ function updateMessage(){
             //alert(data);          
             //add content to first
             var _content = jQuery(data);
+            jQuery("#tabs-2 table.hidden button").button();
             jQuery("#tabs-2").prepend(_content);
+            jQuery("#tabs-2 table.hidden button").button();
             //start to show
             var _ms = jQuery("#tabs-2 table.hidden");
-            jQuery("#tabs-2 table.hidden button").button();
             _ms.each(function(){
                 var _this = jQuery(this);
                 _this.fadeIn(2000);
                 _this.removeClass("hidden");
             });
+            jQuery("#content button").button();
             // movement
         }
     });
 }
 
-//setInterval("updateMessage()", 10000);
+setInterval("updateMessage()", 12000);
 
 
 

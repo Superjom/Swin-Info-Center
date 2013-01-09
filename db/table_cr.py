@@ -212,12 +212,12 @@ class Follower(Base):
     name = Column(String)
     date = Column(Date)
     message_id = Column(Integer, ForeignKey("message.id"))
-    #logo_url = Column(String)
+    logo_url = Column(String)
     
     def __init__(self, name, date, logo_url=''):
         self.name = name
         self.date = date
-        #self.logo_url = logo_url
+        self.logo_url = logo_url
 
 class Reply(Base):
     __tablename__ = "reply"
@@ -226,16 +226,18 @@ class Reply(Base):
     status = Column(Integer)
     #replyto
     replyto = Column(String)
+    owner_id = Column(Integer)
     #reply.item     one to one
     item = relationship("ReplyItem", uselist=False)
     #many to one user
     user_id = Column(Integer, ForeignKey('user.id'))
 
     
-    def __init__(self, date, status, replyto):
+    def __init__(self, date, status, replyto, owner_id):
         self.date = date
         self.status = status
         self.replyto = replyto
+        self.owner_id = owner_id
 
 class ReplyItem(Base):
     __tablename__ = 'replyitem'
