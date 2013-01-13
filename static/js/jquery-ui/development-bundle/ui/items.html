@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>Swin Message Center</title>
+<link rel="stylesheet" href="js/jquery-ui/development-bundle/themes/custom-theme/jquery.ui.all.css" />
+<link rel="stylesheet" href="style/style.css" />
+<script src="js/jquery-ui/js/jquery-1.8.3.js"></script>
+<script src="js/jquery-ui/development-bundle/ui/jquery.ui.core.js"></script>
+<script src="js/jquery-ui/development-bundle/ui/jquery.ui.widget.js"></script>
+<script src="js/jquery-ui/development-bundle/ui/jquery.ui.tabs.js"></script>
+<script src="js/jquery-ui/development-bundle/ui/jquery.ui.button.js"></script>
+
+<style>
+</style>
+</head>
+
+<body>
+	<div id="header">
+        <div class="content">
+            <img id="logo" src="images/logo.png" />
+            <div id="icons">
+                <a class="config" href="#" alt="config"></a>
+                <a class="logout" href="#" alt="logout"></a>
+            </div><!-- end icons -->
+            <input type="text" id="search_box"/>
+            <div class="clear"></div>
+        </div><!-- end content -->
+	</div><!-- header -->
+	
+	<div id="content" class="box">
+		<div id="barleft">
+			<img id="user_img" src="images/user.jpg" />
+            <div style="width:100%; padding:10px;">
+                <span id="user_name">Superjom</span>
+                    <hr />
+                <ul id="user_profile">
+                    <li>Peking University</li>
+                    <li>superjom@gmail.com</li>
+                    <li>Shenzhen</li>
+                </ul>
+                <hr />
+                <table id="user_new_messages">
+                    <tr class="first_line"><td>3</td> <td>0</td> <td>12</td></tr>
+                    <tr class="second_line"><td>News</td><td>Alert</td><td>activities</td></tr>
+                </table>
+            </div><!-- end div -->
+		</div><!-- barleft -->
+		
+		<div id="baright">
+			
+		</div><!-- baright -->
+	</div><!-- content -->
+	
+	<div class="clear"></div>
+	<div id="footer" class="box">
+        this is footer 
+	</div><!-- footer-->
+</body>
+<script>
+$(function(){
+    //$("#baright").tabs();
+	$("form#push_message button").button();
+});
+</script>
+</html>

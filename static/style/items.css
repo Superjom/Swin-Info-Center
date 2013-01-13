@@ -1,0 +1,78 @@
+/* CSS Document */
+a{
+    color:#4183c4;
+	font-family:"微软雅黑", "Times New Roman";
+    font-weight:bold;
+}
+#barleft, #baright{
+	border:1px solid #eee;
+	float:left;
+	}
+#barleft{
+	width:680px;
+    margin-left:15px;
+    }
+#section_title{
+    display:block;
+    font-size:35px;
+    font-weight:bold;
+	font-family:Helvetica, arial, freesans, clean, sans-serif;
+}
+#barleft{
+    padding:8px;
+	width:680px;
+    margin-left:15px;
+    }
+#barleft table{
+    padding:0;
+    margin-top:10px;
+	margin-bottom:10px;
+    border-bottom:1px solid #eee;
+    width:100%;
+}
+#barleft a{
+    color:#4183c4;
+	font-family:"微软雅黑", "Times New Roman";
+    font-weight:bold;
+}
+
+#barleft a.upper, .tab_box a.downer{
+    display:block;
+    height:40px;
+    width:40px;
+	background-position:center;
+	background-repeat:no-repeat;
+}
+#barleft a.upper{
+	background-image:url(../images/icon_upper.png);
+	}
+#barleft a.downer{
+	background-image:url(../images/icon_downer.png);
+	}
+#barleft span.title{
+	font-family:"微软雅黑", "Times New Roman";
+}
+
+#barleft span.subtitle{
+	font-family:"微软雅黑", "Times New Roman";
+    display:block;
+    color:#000;
+}
+#barleft span.date{
+	font-family:"微软雅黑", "Times New Roman";
+    color:#999;
+}
+
+#baright{
+    padding:8px;
+	font-family:Helvetica, arial, freesans, clean, sans-serif;
+	width:240px;
+	padding:5px;
+	text-align:left;
+	}
+#baright a{
+    display:block;
+    padding:3px;
+    width:100%;
+}
+

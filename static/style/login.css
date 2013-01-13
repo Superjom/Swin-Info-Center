@@ -1,0 +1,52 @@
+/* CSS Document */
+#content{
+	margin-top:50px;
+	margin-bottom:150px;
+	}
+#title_left{
+	float:left;
+	width:600px;
+	margin-top:20px;
+	}
+
+#title_left .title{
+	line-height:1.2em;
+	font-size:60px;
+	font-family:Helvetica, arial, freesans, clean, sans-serif;
+	font-weight:normal;
+	color:#333;
+	}
+#title_left .subtitle{
+	line-height:1.5em;
+	color:#888;
+	}
+table#login{
+	width:330px;
+	float:left;
+	margin-left:60px;
+	}
+table#login td{
+	padding:3px 0;
+	}
+table#login input{
+	border:1px solid #ccc;
+	width:250px;;
+	border-radius:5px;	
+	font-size:25px;
+	color:#999;
+	padding:5px;
+}
+table#intro{
+	display:block;
+	width:100%;
+	margin-top:50px;
+	}
+table#intro td{
+	width:32%;
+	}
+table#intro img{
+	width:250px;
+	margin:0 auto;
+	}
+
+

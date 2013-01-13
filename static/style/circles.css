@@ -1,0 +1,66 @@
+/* CSS Document */
+#tabs-1{
+    padding:0;
+}
+ul#circles{
+	font-family:"微软雅黑", "Times New Roman";
+    margin:0;
+}
+ul#circles li{
+	display:block;;
+	width:700px;
+	padding:5px;
+    border-bottom:1px solid #ccc;
+	font-family:"微软雅黑", "Times New Roman";
+	}
+ul#circles img{
+    width:80px;
+    margin-right:5px 10px;
+}
+ul#circles span.name, ul#circles span.des{
+	display:block;
+	}
+ul#circles span.name{
+	font-size:20px;
+	font-weight:bold;
+	}
+ul#cirlces span.des{
+	color:#333;
+	}
+
+ul#circles span.num{
+    display:block; 
+}
+	
+ul.admin li{
+	display:block;
+	float:left;
+	width:40px;
+	}
+
+span.admin a{
+	color:#4183C4;
+}
+table#circle_create{
+    float: left;
+}
+
+table#circle_create input, table#circle_create textarea
+{
+    width:400px;
+    padding:.5em;
+}
+table#circle_create textarea
+{
+    height:5em;
+}
+div#logo_review{
+    float:left;
+    width:250px;
+    padding:10px;
+}
+div#logo_review img{
+    width:200px;
+    margin:5px auto;
+}
+

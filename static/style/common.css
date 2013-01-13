@@ -1,0 +1,120 @@
+/* CSS Document */
+body{
+	font-family:"微软雅黑", "Times New Roman";
+    padding:0;
+	margin:0;
+    color:#333;
+}
+a{
+	font-family:"微软雅黑", "Times New Roman";
+    color:#000;
+    text-decoration:none;
+}
+a:hover {
+	font-family:"微软雅黑", "Times New Roman";
+    text-decoration:underline;
+}
+input, textarea{
+	padding:.5em;
+	font-family:"微软雅黑", "Times New Roman";
+	}
+
+table.form td{
+    padding:5px;
+}
+
+.box{
+width:1020px;
+margin:0 auto;
+}
+.clear{
+clear:both;
+}
+#header{
+    background-color:#094ab2;
+	width:100%;
+    padding:10px;
+	}
+#header #logo{
+    width:350px;
+    float:left;
+}
+#header .content{
+    width:1000px;
+    margin:0 auto;
+}
+#header a{
+    display:block;
+    float:right;
+    width:50px;
+    height:50px;
+	background-repeat:no-repeat;
+	background-position:center;
+}
+#header .icons{
+    float:right;
+}
+#header .config{
+	background-image:url(../images/icon_config.png);
+	}
+#header .logout{
+	background-image:url(../images/icon_logout.png);
+	}
+	
+#header input{
+    float:right;
+    margin-right; 20px;
+}
+
+#content #user_profile li{
+    list-style:none;
+}
+
+#user_img{
+	width:240px;
+	border:8px solid #eee;
+	border-radius:10px;
+    margin-bottom:10px;
+	}
+span#user_name{
+	font-family:Helvetica, arial, freesans, clean, sans-serif;
+	display:block;
+	clear:both;
+	font-size:30px;
+    color:#495961;
+    font-weight:bold;
+	}
+/* ---------- toolbar ------------- */
+div#toolbar{
+	background-color:#eee;
+	width:100%;
+	margin:0;
+	padding:5px;
+}
+div#toolbar button{
+ 	border:1px solid #999;
+	border-radius:5px;
+	padding:.5em;
+	float:right;
+	}
+div#toolbar button:hover{
+	background-color:lightblue;
+	}
+
+div#toolbar a{
+	display:block;
+	float:left;
+	margin-right:15px;
+	color:#474747;
+	font-weight:bold;
+	}
+div#toolbar a:hover{
+	color:#4183C4;
+	text-decoration:none;
+	}
+
+
+/* -------- footer ------------------ */
+#footer{
+    height:100px;
+}

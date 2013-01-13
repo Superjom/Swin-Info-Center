@@ -1,0 +1,43 @@
+/* CSS Document */
+table#profile_edit{
+    float:left;
+    }
+table#profile_edit input, table#profile_edit textarea
+{
+    width:400px;
+    padding:.5em;
+}
+table#profile_edit textarea
+{
+    height:5em;
+}
+div#logo_review{
+    float:left;
+    width:250px;
+    border:1px solid blue;
+    padding:10px;
+}
+div#logo_review img{
+    width:200px;
+    margin:5px auto;
+}
+
+#profile_nav .li a{
+    color:#333;
+    font-size:45px;
+    line-height:2em;
+}
+
+#profile_nav .li a:hover {
+    text-decoration:none;
+}
+
+#profile_nav span.inactive a{
+    color:#ccc;
+}
+
+#profile_nav .separator{
+    font-size:45px;
+    line-height:1.5em;
+    color:#ccc;
+}
