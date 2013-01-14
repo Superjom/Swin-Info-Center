@@ -5,7 +5,6 @@ from datetime import datetime  as dt
 import types
 import db.table_cr as table
 import db.ctrl.user as user
-import db.ctrl.tag as tag
 import db.ctrl.circle as circle
 import db.ctrl.message as message
 from db.ctrl.common import getSession

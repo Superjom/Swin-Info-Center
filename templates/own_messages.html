@@ -73,7 +73,8 @@ $for message in messages:
         <div id="box_$message['id']" class="message-content" style="font-size:20px;">
         <span style="font-size:25px; color:#333;">Followers:</span>
             $for f in message['followers']:
-                <div><img style="width:60px;" src="$f['logo_url']"/><br/> <a href='#'>$f['name']</a><div>
+            <!--<div><img style="width:60px;" src="$f['logo_url']"/><br/> <a href='#'>$f['name']</a><div> -->
+            <div><img style="width:60px;" src="/static/images/logo_female.jpg"/><br/> <a href='#'>$f['name']</a><div> 
         </div>
         
     </td>
